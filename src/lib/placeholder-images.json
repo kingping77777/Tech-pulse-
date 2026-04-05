@@ -1,0 +1,136 @@
+{
+  "placeholderImages": [
+    {
+      "id": "article-1",
+      "description": "Abstract AI visualization",
+      "imageUrl": "https://images.unsplash.com/photo-1531169509526-f8f1fdaa4a67?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxBSSUyMGFic3RyYWN0fGVufDB8fHx8MTc2MzAyNDA4MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "AI abstract"
+    },
+    {
+      "id": "article-2",
+      "description": "Quantum computer chip",
+      "imageUrl": "https://images.unsplash.com/photo-1617839625591-e5a789593135?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxxdWFudHVtJTIwY29tcHV0aW5nfGVufDB8fHx8MTc2Mjk5NTAzNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "quantum computing"
+    },
+    {
+      "id": "article-3",
+      "description": "Server room with glowing lights",
+      "imageUrl": "https://images.unsplash.com/photo-1691435828932-911a7801adfb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzZXJ2ZXIlMjByb29tfGVufDB8fHx8MTc2Mjk1MjgwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "server room"
+    },
+    {
+      "id": "article-4",
+      "description": "Person interacting with a futuristic UI",
+      "imageUrl": "https://images.unsplash.com/photo-1720962158897-870c56fbb373?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmdXR1cmlzdGljJTIwVUl8ZW58MHx8fHwxNzYzMDI0MDgwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "futuristic UI"
+    },
+    {
+      "id": "article-5",
+      "description": "Close up of a smartphone screen",
+      "imageUrl": "https://images.unsplash.com/photo-1662468353955-d7adce63c1be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzbWFydHBob25lJTIwc2NyZWVufGVufDB8fHx8MTc2MzAxMTYyNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "smartphone screen"
+    },
+    {
+      "id": "article-6",
+      "description": "Developers collaborating around a monitor",
+      "imageUrl": "https://images.unsplash.com/photo-1622675273018-0d0bbb4a7d99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxkZXZlbG9wZXIlMjBjb2xsYWJvcmF0aW9ufGVufDB8fHx8MTc2MzAyNDA4MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "developer collaboration"
+    },
+    {
+      "id": "article-7",
+      "description": "Satellite orbiting the earth",
+      "imageUrl": "https://images.unsplash.com/photo-1634176866089-b633f4aec882?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzYXRlbGxpdGUlMjBlYXJ0aHxlbnwwfHx8fDE3NjMwMjQwODB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "satellite earth"
+    },
+    {
+      "id": "article-8",
+      "description": "Virtual reality headset in use",
+      "imageUrl": "https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx2aXJ0dWFsJTIwcmVhbGl0eXxlbnwwfHx8fDE3NjI5NzkyNzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "virtual reality"
+    },
+    {
+      "id": "article-9",
+      "description": "Apple headquarters building",
+      "imageUrl": "https://images.unsplash.com/photo-1543071293-d91175a68672?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtb2Rlcm4lMjBhcmNoaXRlY3R1cmV8ZW58MHx8fHwxNzYzMDE5Nzg1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "modern architecture"
+    },
+    {
+      "id": "article-10",
+      "description": "Google data center aisle",
+      "imageUrl": "https://images.unsplash.com/photo-1682559736721-c2e77ff4c650?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxkYXRhJTIwY2VudGVyfGVufDB8fHx8MTc2Mjk5MDgwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data center"
+    },
+    {
+      "id": "article-11",
+      "description": "Microsoft campus aerial view",
+      "imageUrl": "https://images.unsplash.com/photo-1662958570149-4875c1b4d485?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb3Jwb3JhdGUlMjBjYW1wdXN8ZW58MHx8fHwxNzYzMDI0MDgwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "corporate campus"
+    },
+    {
+      "id": "article-12",
+      "description": "Nvidia GPU close-up",
+      "imageUrl": "https://images.unsplash.com/photo-1627281796868-cfbc3ae7b65a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxHUFUlMjBjaGlwfGVufDB8fHx8MTc2MzAyNDA4MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "GPU chip"
+    },
+    {
+      "id": "hero-image",
+      "description": "Abstract network of light pulses",
+      "imageUrl": "https://images.unsplash.com/photo-1690029670479-9fee2fa120eb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhYnN0cmFjdCUyMG5ldHdvcmt8ZW58MHx8fHwxNzYyOTU0OTkxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract network"
+    },
+    {
+      "id": "logo-google",
+      "description": "Google logo",
+      "imageUrl": "https://images.unsplash.com/photo-1678483789470-66fce6ab001f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxsb2dvJTIwZ29vZ2xlfGVufDB8fHx8MTc2MzAyNDA4MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "logo google"
+    },
+    {
+      "id": "logo-apple",
+      "description": "Apple logo",
+      "imageUrl": "https://images.unsplash.com/photo-1682272199370-8405678121ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxsb2dvJTIwYXBwbGV8ZW58MHx8fHwxNzYzMDI0MDgwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "logo apple"
+    },
+    {
+      "id": "logo-microsoft",
+      "description": "Microsoft logo",
+      "imageUrl": "https://images.unsplash.com/photo-1662947036583-d67dd8055edf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxsb2dvJTIwbWljcm9zb2Z0fGVufDB8fHx8MTc2MzAyNDA4MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "logo microsoft"
+    },
+    {
+      "id": "logo-nvidia",
+      "description": "Nvidia logo",
+      "imageUrl": "https://images.unsplash.com/photo-1637489981573-e45e9297cb21?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxsb2dvJTIwbnZpZGlhfGVufDB8fHx8MTc2MzAyNDA4MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "logo nvidia"
+    },
+    {
+      "id": "logo-meta",
+      "description": "Meta logo",
+      "imageUrl": "https://images.unsplash.com/photo-1665799871677-f1fd17338b43?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxsb2dvJTIwbWV0YXxlbnwwfHx8fDE3NjMwMjQwODB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "logo meta"
+    },
+    {
+      "id": "avatar-1",
+      "description": "User avatar 1",
+      "imageUrl": "https://images.unsplash.com/photo-1613566028327-4a32e02f6ab1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwb3J0cmFpdCUyMHBlcnNvbnxlbnwwfHx8fDE3NjI5ODgzMzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "portrait person"
+    },
+    {
+      "id": "avatar-2",
+      "description": "User avatar 2",
+      "imageUrl": "https://images.unsplash.com/photo-1754844362137-88441eb7cc6f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwb3J0cmFpdCUyMHNtaWxpbmd8ZW58MHx8fHwxNzYyOTAxMTkxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "portrait smiling"
+    },
+    {
+      "id": "avatar-3",
+      "description": "User avatar 3",
+      "imageUrl": "https://images.unsplash.com/photo-1627813173262-fa4cd4fa7d5e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cGVyc29uJTIwZ2xhc3Nlc3xlbnwwfHx8fDE3NjI5NzIzNTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person glasses"
+    },
+    {
+      "id": "avatar-4",
+      "description": "User avatar 4",
+      "imageUrl": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8d29tYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjMwMDM5NTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    }
+  ]
+}

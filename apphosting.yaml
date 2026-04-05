@@ -1,0 +1,22 @@
+# Settings to manage and configure a Firebase App Hosting backend.
+# https://firebase.google.com/docs/app-hosting/configure
+
+runConfig:
+  # Increase this value if you'd like to automatically spin up
+  # more instances in response to increased traffic.
+  maxInstances: 1
+  # Secrets can be referenced by environment variables.
+  # The `PINECONE_API_KEY` secret must be created before deploying.
+  # https://firebase.google.com/docs/app-hosting/configure#secrets
+  # env:
+  #   - variable: PINECONE_API_KEY
+  #     secret: PINECONE_API_KEY
+
+# A scheduled job that will be triggered by Cloud Scheduler.
+# The `schedule` and `timeZone` fields use the unix-cron format and tz database time zones.
+# https://firebase.google.com/docs/app-hosting/configure#scheduled-jobs
+scheduledJobs:
+  - schedule: "0 */6 * * *"
+    timeZone: "America/Los_Angeles"
+    httpTarget:
+      uri: "/api/fetch-news"
