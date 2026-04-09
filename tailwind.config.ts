@@ -1,4 +1,3 @@
-
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -17,93 +16,75 @@ export default {
       },
     },
     extend: {
-      fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['"Space Grotesk"', 'sans-serif'],
-        code: ['monospace'],
-      },
       colors: {
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
-        },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
-        },
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
-        },
+        background: '#0A0A0F',
+        surface: '#111118',
+        card: '#16161F',
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+          violet: '#6C63FF',
+          cyan: '#00D4FF',
         },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+        text: {
+          primary: '#F0F0FF',
+          muted: '#6B7280',
         },
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        chart: {
-          '1': 'hsl(var(--chart-1))',
-          '2': 'hsl(var(--chart-2))',
-          '3': 'hsl(var(--chart-3))',
-          '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))',
+        alert: {
+          red: '#FF3B3B',
         },
+        category: {
+          ai: '#6C63FF',
+          crypto: '#00D4FF',
+          startups: '#10B981',
+          bigtech: '#F97316',
+          marketing: '#EC4899',
+        },
+        border: '#1E1E28',
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        "DEFAULT": "0.25rem",
+        "lg": "0.5rem",
+        "xl": "1rem",
+        "2xl": "1.5rem",
+        "full": "9999px"
+      },
+      fontFamily: {
+        headline: ["Playfair Display", "serif"],
+        body: ["Inter", "sans-serif"],
+        label: ["Inter", "sans-serif"]
+      },
+      fontSize: {
+        'hero': ['56px', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '700' }],
+        'section': ['24px', { lineHeight: '1.3', fontWeight: '600' }],
+        'card-title': ['18px', { lineHeight: '1.4', fontWeight: '500' }],
+        'body-base': ['14px', { lineHeight: '1.6', fontWeight: '400' }],
+        'meta': ['12px', { fontWeight: '400' }],
       },
       keyframes: {
-        'accordion-down': {
-          from: {
-            height: '0',
-          },
-          to: {
-            height: 'var(--radix-accordion-content-height)',
-          },
+        'fade-in-up': {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
-        'accordion-up': {
-          from: {
-            height: 'var(--radix-accordion-content-height)',
-          },
-          to: {
-            height: '0',
-          },
+        'shimmer': {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
         },
+        'pulse-ring': {
+          '0%': { transform: 'scale(1)', opacity: '1', boxShadow: '0 0 0 0 rgba(255, 59, 59, 0.7)' },
+          '70%': { transform: 'scale(1.1)', opacity: '0.8', boxShadow: '0 0 0 10px rgba(255, 59, 59, 0)' },
+          '100%': { transform: 'scale(1)', opacity: '1', boxShadow: '0 0 0 0 rgba(255, 59, 59, 0)' },
+        },
+        'scroll-x': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-100%)' },
+        }
       },
       animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
-      },
-      transitionProperty: {
-        'height': 'height',
-        'spacing': 'margin, padding',
-        'colors': 'background-color, border-color, color, fill, stroke, text-decoration-color',
-        'transform': 'transform',
-      },
-      transitionTimingFunction: {
-       'ease-in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
-      },
-      transitionDuration: {
-       '300': '300ms',
+        'fade-in-up': 'fade-in-up 0.6s ease-out forwards',
+        'shimmer': 'shimmer 3s infinite linear',
+        'pulse-ring': 'pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'scroll-x': 'scroll-x 20s linear infinite',
       }
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate'), require('@tailwindcss/forms'), require('@tailwindcss/container-queries')],
 } satisfies Config;

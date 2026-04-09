@@ -1,0 +1,7 @@
+src/app/(app)/fetch-now/page.tsx(8,10): error TS2305: Module '"@/lib/data"' has no exported member 'clearCache'.
+src/app/(app)/fetch-now/page.tsx(90,18): error TS2304: Cannot find name 'RefreshCw'.
+src/app/api/genkit/[...flow]/route.ts(4,31): error TS2339: Property 'getRoutes' does not exist on type 'Genkit'.
+src/components/layout/Sidebar.tsx(80,17): error TS2322: Type '"ghost"' is not assignable to type '"default" | "outline" | null | undefined'.
+src/components/layout/Sidebar.tsx(113,19): error TS2322: Type '"ghost"' is not assignable to type '"default" | "outline" | null | undefined'.
+src/hooks/use-live-news.ts(4,10): error TS2305: Module '"@/ai/flows/generate-news-articles"' has no exported member 'generateNewsArticles'.
+src/hooks/use-live-news.ts(5,15): error TS2305: Module '"@/ai/flows/generate-news-articles"' has no exported member 'GenerateNewsArticlesInput'.

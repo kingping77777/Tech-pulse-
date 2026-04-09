@@ -77,7 +77,7 @@ export function AppSidebar() {
               <SidebarMenuButton
                 key={item.href}
                 asChild
-                variant="ghost"
+                variant="default"
                 isActive={isActive(item.href)}
                 tooltip={{ children: item.label, side: 'right', align: 'center' }}
               >
@@ -110,7 +110,7 @@ export function AppSidebar() {
                 <SidebarMenuButton
                   key={item.href}
                   asChild
-                  variant="ghost"
+                  variant="default"
                   isActive={isActive(item.href)}
                   tooltip={{ children: item.label, side: 'right', align: 'center' }}
                 >
@@ -151,12 +151,6 @@ export function AppSidebar() {
           <DropdownMenuContent side="top" align="start" className="w-56 mb-2">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/profile">
-                <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
-              </Link>
-            </DropdownMenuItem>
             <DropdownMenuItem>
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>

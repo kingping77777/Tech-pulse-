@@ -3,7 +3,7 @@ export type Article = {
   title: string;
   slug: string;
   content: string;
-  summary: string;
+  summary: string | string[];
   tags: string[];
   categories: string[];
   company: string;
@@ -56,5 +56,9 @@ export type HackerNewsStory = {
   by: string;
   time: number;
   descendants: number;
-  summary?: string;
+  summary?: string | string[];
+  type?: string;
+  dead?: boolean;
+  deleted?: boolean;
+  kids?: number[];
 };

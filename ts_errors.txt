@@ -1,0 +1,13 @@
+.next/types/app/(app)/article/[slug]/page.ts(34,29): error TS2344: Type 'ArticlePageProps' does not satisfy the constraint 'PageProps'.
+  Types of property 'params' are incompatible.
+    Type '{ slug: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+src/app/(app)/fetch-now/page.tsx(8,10): error TS2305: Module '"@/lib/data"' has no exported member 'clearCache'.
+src/app/(app)/fetch-now/page.tsx(90,18): error TS2304: Cannot find name 'RefreshCw'.
+src/app/api/genkit/[...flow]/route.ts(4,31): error TS2339: Property 'getRoutes' does not exist on type 'Genkit'.
+src/components/layout/Sidebar.tsx(80,17): error TS2322: Type '"ghost"' is not assignable to type '"default" | "outline" | null | undefined'.
+src/components/layout/Sidebar.tsx(113,19): error TS2322: Type '"ghost"' is not assignable to type '"default" | "outline" | null | undefined'.
+src/hooks/use-live-news.ts(4,10): error TS2305: Module '"@/ai/flows/generate-news-articles"' has no exported member 'generateNewsArticles'.
+src/hooks/use-live-news.ts(5,15): error TS2305: Module '"@/ai/flows/generate-news-articles"' has no exported member 'GenerateNewsArticlesInput'.
+src/lib/data.ts(40,39): error TS2339: Property 'type' does not exist on type 'HackerNewsStory'.
+src/lib/data.ts(40,79): error TS2339: Property 'dead' does not exist on type 'HackerNewsStory'.
+src/lib/data.ts(40,94): error TS2339: Property 'deleted' does not exist on type 'HackerNewsStory'.

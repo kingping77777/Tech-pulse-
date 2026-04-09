@@ -1,0 +1,15 @@
+   ▲ Next.js 15.3.8
+   - Local:        http://localhost:3004
+   - Network:      http://192.168.25.48:3004
+
+ ✓ Starting...
+ ✓ Ready in 3.3s
+ ○ Compiling / ...
+ ✓ Compiled / in 6.7s (2801 modules)
+Fetching fresh stories from Hacker News API.
+ ✓ Compiled in 1356ms (1317 modules)
+Successfully fetched and cached 50 stories from Hacker News.
+ GET / 200 in 10179ms
+ ○ Compiling /trends ...
+ ✓ Compiled /trends in 1822ms (2853 modules)
+ GET /trends 200 in 2376ms

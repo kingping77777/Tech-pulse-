@@ -79,22 +79,78 @@ export async function getArticles(limit: number = 20): Promise<Article[]> {
   return getMockArticles(limit);
 }
 
+export async function getArticleBySlug(slug: string): Promise<Article | undefined> {
+  const allArticles = await getArticles(50);
+  return allArticles.find(a => a.slug === slug || a.id === slug);
+}
+
 
 const mapHnStoriesToArticles = (stories: HackerNewsStory[]): Article[] => {
+  // A large pool of distinct, premium "Digital Atelier / Tech / Cyberpunk" images to avoid repeats
+  const massiveImagePool: string[] = [
+    'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=600', // AI Network
+    'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=600', // Robot
+    'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=600', // Cyber Security
+    'https://images.unsplash.com/photo-1605792657660-596af9009e82?auto=format&fit=crop&q=80&w=600', // Bitcoin
+    'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&q=80&w=600', // Crypto generic
+    'https://images.unsplash.com/photo-1553028826-f4804a6dba3b?auto=format&fit=crop&q=80&w=600', // Startup planning
+    'https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&q=80&w=600', // Sleek office
+    'https://images.unsplash.com/photo-1496096265110-f83ad7f96608?auto=format&fit=crop&q=80&w=600', // Server racks
+    'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=600', // CPU motherboard
+    'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=600', // Space data
+    'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=600', // Retro wave VR
+    'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=600', // Cyber Matrix
+    'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=600', // Tech office glass
+    'https://images.unsplash.com/photo-1531297172864-45d0614f8111?auto=format&fit=crop&q=80&w=600', // Minimalist devices
+    'https://images.unsplash.com/photo-1633412802994-5c058f151b66?auto=format&fit=crop&q=80&w=600', // Code on screen
+    'https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&q=80&w=600', // Abstract 3D shape
+    'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600', // Fluid colors Tech
+    'https://images.unsplash.com/photo-1634152962476-4b8a00e1915c?auto=format&fit=crop&q=80&w=600', // GPU Crypto farm
+    'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=600', // Smart phone array
+    'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=600'  // Data visualization
+  ];
+
+  const generateHoloSummary = (title: string, author: string, score: number): string[] => {
+    const intakes = [
+      `Digital protocol analysis initiated for artifact: ${title}`,
+      `Real-time decentralized metrics scanning architecture node.`,
+      `Global network sensors tracking structural viability.`
+    ];
+    const mechanics = [
+      "Discovery fundamentally alters the current deployment pipeline.",
+      "Identified as a significant pivot in resource allocation models.",
+      "Classified as a critical milestone for ecosystem integration."
+    ];
+    const validations = [
+      `Expect rapid adoption cycles. Validation node: ${author}.`,
+      `Further observation of paradigm shifts recommended. Origin traced to ${author}.`,
+      `Market volatility and framework evolution highly probable. Metric consensus hit ${score}.`
+    ];
+    
+    return [
+        intakes[Math.floor((title.length + score) % intakes.length)],
+        mechanics[Math.floor(title.length % mechanics.length)],
+        validations[Math.floor(score % validations.length)]
+    ];
+  };
+
   return stories.map((story, index) => {
     const randomUser = users[index % users.length];
     const category = categorizeHackerNewsStory(story.title);
+    
+    // Hash the ID slightly differently or just module it to pick a unique consistent image
+    const imageUrl = massiveImagePool[(story.id + index) % massiveImagePool.length];
 
     return {
       id: `hn-${story.id}`,
       title: story.title,
       slug: `hn-${story.id}`, // Slugs are not really used for HN links but are part of the type
       content: story.title, // HN API doesn't provide content
-      summary: `A story by ${story.by} with ${story.score} points.`,
+      summary: generateHoloSummary(story.title, story.by, story.score),
       tags: getTagsFromTitle(story.title),
       categories: [category],
       company: '',
-      imageUrl: `https://picsum.photos/seed/${story.id}/600/400`,
+      imageUrl: imageUrl,
       imageHint: "tech abstract",
       authorId: randomUser.id,
       publishedAt: new Date(story.time * 1000).toISOString(),

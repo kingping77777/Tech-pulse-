@@ -5,14 +5,19 @@ import { Header } from '@/components/layout/Header';
 import { ArticleCard } from '@/components/ArticleCard';
 import { useLikes } from '@/hooks/use-likes';
 import { HeartCrack } from 'lucide-react';
+import { ThreeBackground } from '@/components/ThreeBackground';
 
 export default function LikedArticlesPage() {
   const { likes } = useLikes();
 
   return (
     <>
-      <Header title="Bookmarked Articles" />
-      <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+      <Header title="Bookmarked Datastreams" />
+      <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 relative">
+        <div className="fixed inset-0 z-0 opacity-40 mix-blend-screen pointer-events-none mt-16">
+          <ThreeBackground variant="torus" />
+        </div>
+        <div className="relative z-10 w-full">
         {likes.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {likes.map(article => (
@@ -26,6 +31,7 @@ export default function LikedArticlesPage() {
             <p className="max-w-md">You haven't bookmarked any articles yet. Click the heart icon on an article to save it here.</p>
           </div>
         )}
+        </div>
       </main>
     </>
   );

@@ -1,0 +1,38 @@
+   ▲ Next.js 15.3.8
+
+   Creating an optimized production build ...
+ ⚠ Compiled with warnings in 15.0s
+
+./src/app/(app)/fetch-now/page.tsx
+Attempted import error: 'clearCache' is not exported from '@/lib/data' (imported as 'clearCache').
+
+Import trace for requested module:
+./src/app/(app)/fetch-now/page.tsx
+
+ ⚠ Compiled with warnings in 12.0s
+
+./src/app/(app)/fetch-now/page.tsx
+Attempted import error: 'clearCache' is not exported from '@/lib/data' (imported as 'clearCache').
+
+Import trace for requested module:
+./src/app/(app)/fetch-now/page.tsx
+
+ ✓ Compiled successfully in 27.0s
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+TypeError: o.getRoutes is not a function
+    at 70921 (C:\Users\Daksh\OneDrive\Desktop\tech pulse\.next\server\app\api\genkit\[...flow]\route.js:59:2376)
+    at t (C:\Users\Daksh\OneDrive\Desktop\tech pulse\.next\server\webpack-runtime.js:1:143)
+    at 15775 (C:\Users\Daksh\OneDrive\Desktop\tech pulse\.next\server\app\api\genkit\[...flow]\route.js:8:103743)
+    at t (C:\Users\Daksh\OneDrive\Desktop\tech pulse\.next\server\webpack-runtime.js:1:143)
+    at __webpack_exec__ (C:\Users\Daksh\OneDrive\Desktop\tech pulse\.next\server\app\api\genkit\[...flow]\route.js:90:3432)
+    at <unknown> (C:\Users\Daksh\OneDrive\Desktop\tech pulse\.next\server\app\api\genkit\[...flow]\route.js:90:3535)
+    at t.X (C:\Users\Daksh\OneDrive\Desktop\tech pulse\.next\server\webpack-runtime.js:1:1291)
+    at <unknown> (C:\Users\Daksh\OneDrive\Desktop\tech pulse\.next\server\app\api\genkit\[...flow]\route.js:90:3517)
+    at Object.<anonymous> (C:\Users\Daksh\OneDrive\Desktop\tech pulse\.next\server\app\api\genkit\[...flow]\route.js:90:3596)
+
+> Build error occurred
+[Error: Failed to collect page data for /api/genkit/[...flow]] {
+  type: 'Error'
+}

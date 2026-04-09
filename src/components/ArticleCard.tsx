@@ -1,42 +1,21 @@
-
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { Article } from '@/lib/types';
-import { format } from 'date-fns';
-import { users } from '@/lib/data';
-import { Skeleton } from './ui/skeleton';
-import { Clock, ExternalLink, Heart } from 'lucide-react';
 import { useLikes } from '@/hooks/use-likes';
-import { Button } from './ui/button';
-import { MouseEvent, useState, useEffect } from 'react';
-import { cn } from '@/lib/utils';
+import { MouseEvent, useRef } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
 type ArticleCardProps = {
   article: Article;
 };
 
 export function ArticleCard({ article }: ArticleCardProps) {
-  const [isMounted, setIsMounted] = useState(false);
-  const author = users.find(u => u.id === article.authorId);
   const isExternal = !!article.url;
   const { isLiked, addLike, removeLike } = useLikes();
   
   const liked = isLiked(article.id);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const handleLikeToggle = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -58,103 +37,98 @@ export function ArticleCard({ article }: ArticleCardProps) {
     </Link>
   )
 
+  // Map first category to an icon
+  const getIcon = (cat: string) => {
+      const catLower = cat?.toLowerCase() || '';
+      if (catLower.includes('hardware')) return 'memory';
+      if (catLower.includes('startup') || catLower.includes('venture')) return 'rocket_launch';
+      if (catLower.includes('software') || catLower.includes('patch')) return 'terminal';
+      if (catLower.includes('game')) return 'videogame_asset';
+      if (catLower.includes('security')) return 'shield';
+      return 'science';
+  };
+
+  const ref = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  
+  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 20 });
+  
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
+
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+      
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      
+      const xPct = mouseX / width - 0.5;
+      const yPct = mouseY / height - 0.5;
+      
+      x.set(xPct);
+      y.set(yPct);
+  };
+  
+  const onMouseLeave = () => {
+      x.set(0);
+      y.set(0);
+  };
+
   return (
     <CardLink>
-      <Card className="h-full flex flex-col transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-lg group-hover:shadow-primary/10 bg-secondary/30 hover:bg-secondary/50">
-        <CardHeader className="p-0">
-          <div className="relative aspect-video w-full overflow-hidden rounded-t-lg">
-            <Image
-              src={article.imageUrl}
-              alt={article.title}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-              data-ai-hint={article.imageHint}
-              unoptimized={true} // For picsum.photos
-            />
-             <Button 
-                variant="secondary" 
-                size="icon" 
-                className="absolute top-2 right-2 h-8 w-8 rounded-full bg-background/70 hover:bg-background"
-                onClick={handleLikeToggle}
-                aria-label={liked ? 'Remove bookmark' : 'Bookmark article'}
-              >
-                <Heart className={cn('h-4 w-4', liked ? 'fill-red-500 text-red-500' : 'text-muted-foreground')} />
-              </Button>
-          </div>
-        </CardHeader>
-        <CardContent className="flex-grow p-4">
-          <div className="flex gap-1.5 mb-3">
-            {article.tags.slice(0, 2).map((tag) => (
-              <Badge key={tag} variant="secondary" className="px-1.5 py-0.5 text-xs font-medium">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-          <CardTitle className="text-base font-headline font-semibold leading-snug group-hover:text-primary">
-            {article.title}
-          </CardTitle>
-          
-        </CardContent>
-        <CardFooter className="p-4 pt-0 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            {author && (
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={author.photoUrl} alt={author.displayName} data-ai-hint={author.photoHint} />
-                <AvatarFallback>
-                  {author.displayName.split(' ').map(n => n[0]).join('')}
-                </AvatarFallback>
-              </Avatar>
-            )}
-            <div className="text-sm">
-              <p className="font-medium text-xs">{author?.displayName || 'TechPulse Author'}</p>
-              {isMounted ? (
-                <p className="text-muted-foreground text-xs">
-                  {format(new Date(article.publishedAt), 'MMM d, yyyy')}
-                </p>
-              ) : (
-                <Skeleton className="h-3 w-16 mt-1" />
-              )}
+      <div 
+         ref={ref} 
+         onMouseMove={onMouseMove} 
+         onMouseLeave={onMouseLeave} 
+         className="aspect-square group cursor-pointer relative"
+         style={{ perspective: 1000 }}
+      >
+        <motion.div 
+          style={{
+             rotateX,
+             rotateY,
+             transformStyle: "preserve-3d"
+          }}
+          className="w-full h-full bg-surface-container/30 backdrop-blur-xl relative overflow-hidden border border-white/5 rounded-xl shadow-lg transition-colors hover:shadow-[0_8px_30px_rgb(0,242,255,0.2)]"
+        >
+          <img 
+            alt={article.title} 
+            className="w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-110 transition-all duration-700" 
+            src={article.imageUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuCI9zxls0lWXLmMcKWRX-5MUPqkc7VhkOpvzMOx9-KPHrqMuMt6Y6Rm94YAe_vBXnwCdu_caPZneyfvygV_oo6QvgL4Bj_NoQjzug6XPOF2NfRkK6Op6tGPpN2W8YbMBykWN1t-1jdNPTahw8oQNxUY5JOXIFj1g7lEnWq-5JuVNTtcFm9FcXxQoBTNrGN9w2INAvagNcgzAyW1Od8odRyUhXjBSF7LwOHurZg8c9nc1RH7f-Cj7ldyynIPXU6qilvBN1_z-qgr-J0"}
+        />
+        <div className="absolute inset-0 p-6 flex flex-col justify-between bg-gradient-to-t from-surface to-transparent">
+            <div className="flex justify-between items-start">
+               <span className="material-symbols-outlined text-primary-container">
+                    {getIcon(article.categories[0] || article.tags[0])}
+               </span>
+               <button 
+                  onClick={handleLikeToggle}
+                  className={`material-symbols-outlined text-sm z-10 p-2 rounded-full backdrop-blur-md transition-colors ${liked ? 'text-red-400 bg-red-400/10 border border-red-400/20' : 'text-on-surface/40 hover:text-primary-container border border-outline-variant/20 bg-surface/40'}`}
+                  style={{fontVariationSettings: liked ? "'FILL' 1" : "'FILL' 0"}}
+                >
+                  favorite
+               </button>
             </div>
-          </div>
-          {isExternal ? (
-             <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                Source <ExternalLink className="h-3 w-3" />
-            </span>
-          ) : article.readTime && (
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Clock className="h-3 w-3" />
-              <span>{article.readTime} min read</span>
-            </div>
-          )}
-        </CardFooter>
-      </Card>
+            <h4 
+               style={{ transform: "translateZ(80px)" }}
+               className="text-lg font-bold headline-font leading-tight text-on-surface group-hover:text-primary-container transition-colors"
+            >
+                {article.title}
+            </h4>
+        </div>
+        </motion.div>
+      </div>
     </CardLink>
   );
 }
 
 ArticleCard.Skeleton = function ArticleCardSkeleton() {
   return (
-    <Card className="h-full flex flex-col bg-secondary/30">
-      <CardHeader className="p-0">
-        <Skeleton className="aspect-video w-full rounded-t-lg" />
-      </CardHeader>
-      <CardContent className="flex-grow p-4">
-        <div className="flex gap-2 mb-3">
-          <Skeleton className="h-5 w-12 rounded-full" />
-          <Skeleton className="h-5 w-16 rounded-full" />
-        </div>
-        <Skeleton className="h-4 w-full mb-2" />
-        <Skeleton className="h-4 w-3/4" />
-      </CardContent>
-      <CardFooter className="p-4 pt-0">
-        <div className="flex items-center gap-3">
-          <Skeleton className="h-8 w-8 rounded-full" />
-          <div className="text-sm w-32">
-            <Skeleton className="h-3 w-20 mb-2" />
-            <Skeleton className="h-3 w-16" />
-          </div>
-        </div>
-      </CardFooter>
-    </Card>
+    <div className="aspect-square bg-surface-container/50 animate-pulse border border-outline-variant/5 rounded-sm"></div>
   )
 }

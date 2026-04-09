@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#faf7f9",
+                        "surface-dim": "#d3dbe2",
+                        "on-error": "#fff7f6",
+                        "error-container": "#fe8983",
+                        "surface-bright": "#f9f9fb",
+                        "primary-container": "#e4e2e4",
+                        "secondary": "#5e5f63",
+                        "secondary-fixed": "#e3e2e7",
+                        "primary": "#5f5e60",
+                        "outline": "#757c81",
+                        "on-surface": "#2d3338",
+                        "primary-dim": "#535254",
+                        "on-secondary-fixed-variant": "#5b5b60",
+                        "primary-fixed-dim": "#d6d3d6",
+                        "surface-container-high": "#e4e9ee",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#f9362c",
+                        "surface-tint": "#5f5e60",
+                        "surface-container-highest": "#dde3e9",
+                        "surface-container-low": "#f2f4f6",
+                        "on-tertiary": "#fff7f6",
+                        "inverse-on-surface": "#9c9d9f",
+                        "on-secondary": "#faf8fe",
+                        "surface-variant": "#dde3e9",
+                        "background": "#f9f9fb",
+                        "surface-container": "#ebeef2",
+                        "on-background": "#2d3338",
+                        "on-tertiary-fixed-variant": "#150000",
+                        "on-tertiary-fixed": "#000000",
+                        "secondary-dim": "#525357",
+                        "tertiary": "#c1000a",
+                        "error": "#9f403d",
+                        "primary-fixed": "#e4e2e4",
+                        "inverse-surface": "#0c0e10",
+                        "on-error-container": "#752121",
+                        "surface": "#f9f9fb",
+                        "tertiary-fixed-dim": "#e62721",
+                        "on-secondary-container": "#515156",
+                        "outline-variant": "#acb3b8",
+                        "secondary-fixed-dim": "#d5d4d9",
+                        "tertiary-dim": "#ab0008",
+                        "on-surface-variant": "#596065",
+                        "on-secondary-fixed": "#3e3f43",
+                        "secondary-container": "#e3e2e7",
+                        "on-primary-container": "#525154",
+                        "tertiary-container": "#f9362c",
+                        "on-tertiary-container": "#000000",
+                        "on-primary-fixed-variant": "#5c5b5d",
+                        "inverse-primary": "#ffffff",
+                        "on-primary-fixed": "#3f3f41",
+                        "error-dim": "#4e0309"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Newsreader"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .live-pulse {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.15); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .editorial-shadow {
+            box-shadow: 0px 20px 40px rgba(45, 51, 56, 0.06);
+        }
+        .custom-glass {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-tertiary-container/30">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl">
+<div class="flex justify-between items-center max-w-7xl mx-auto px-6 h-20">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black tracking-tighter text-zinc-900 dark:text-zinc-50 font-headline">Tech Pulse</span>
+<div class="hidden md:flex gap-6">
+<a class="font-headline font-bold text-sm tracking-tight text-zinc-900 dark:text-zinc-50 border-b-2 border-zinc-900 dark:border-zinc-50 pb-1" href="#">AI</a>
+<a class="font-headline font-bold text-sm tracking-tight text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-opacity duration-300" href="#">Crypto</a>
+<a class="font-headline font-bold text-sm tracking-tight text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-opacity duration-300" href="#">Startups</a>
+<a class="font-headline font-bold text-sm tracking-tight text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-opacity duration-300" href="#">Big Tech</a>
+<a class="font-headline font-bold text-sm tracking-tight text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-opacity duration-300" href="#">Marketing</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group hidden sm:block">
+<input class="bg-surface-container-low border-none rounded-sm px-4 py-2 text-sm focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all duration-200 w-48 focus:w-64" placeholder="Search insights..." type="text"/>
+</div>
+<button class="material-symbols-outlined text-zinc-900 dark:text-zinc-100 hover:opacity-80 transition-opacity" data-icon="dark_mode">dark_mode</button>
+</div>
+</div>
+<div class="bg-zinc-100 dark:bg-zinc-800 h-[1px] w-full"></div>
+</nav>
+<main class="max-w-7xl mx-auto px-6 pt-32 pb-20">
+<!-- Hero Section -->
+<section class="mb-16">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+<div class="lg:col-span-7 group cursor-pointer">
+<div class="relative overflow-hidden rounded-xl aspect-[16/9] mb-6">
+<img class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-700 ease-out" data-alt="Futuristic silicon photonics processor with glowing neural pathways, macro photography, high-tech cleanroom aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDw91l21BTqjq0QfZ0EYyqOJfqj1hEW85hL5MhKxKiJ9wjxaRTHr9W__GrB-LJyZUiteJNiQhjUtvJyyZghCKUWz6dOafadKglCYQBclkp_d5hVvHIF_9mTrhblwuTbbZacEU66OTfMliVt6OC6aCyxDofi1GeGfQMResddHywcHAYEoAAfwqFmNsIh9P7h9gWzrH4Ti45DdJp46pMp-iiwuQkNyNO58hlkic6S9zJ3oSG78Un7r2NySybOvs6qED_JM9Swh5LsDRza"/>
+<div class="absolute top-4 left-4 bg-tertiary-container px-3 py-1 rounded-full flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-on-tertiary live-pulse"></span>
+<span class="font-label text-[10px] font-bold tracking-widest text-on-tertiary uppercase">Breaking</span>
+</div>
+</div>
+<div class="space-y-4">
+<h1 class="font-headline text-4xl lg:text-5xl font-extrabold tracking-tight text-on-surface leading-tight">The Silicon Renaissance: Beyond the GPU Bottleneck</h1>
+<p class="font-body text-xl text-on-surface-variant leading-relaxed italic">The next generation of AI hardware isn't just faster; it's architecturally sentient. We dive deep into the new photonics startup threatening NVIDIA's dominance.</p>
+<div class="flex items-center gap-4">
+<button class="bg-primary text-on-primary px-8 py-3 rounded-full font-headline font-bold text-sm hover:opacity-90 transition-opacity">Read Full Analysis</button>
+<span class="font-label text-xs font-semibold text-outline tracking-wider uppercase">8 Min Read</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 bg-surface-container-low rounded-xl p-8 h-full flex flex-col">
+<div class="flex items-center justify-between mb-8">
+<h2 class="font-headline text-xl font-bold flex items-center gap-2">
+<span class="w-2 h-4 bg-tertiary rounded-full"></span>
+                            Live Updates
+                        </h2>
+<span class="font-label text-[10px] font-bold text-tertiary tracking-widest border border-tertiary/20 px-2 py-1 rounded uppercase">Real-time Pulse</span>
+</div>
+<div class="space-y-8 flex-grow">
+<div class="flex gap-4 group cursor-pointer">
+<span class="font-label text-xs font-bold text-tertiary pt-1">08:42</span>
+<div class="space-y-1">
+<h3 class="font-headline font-bold text-sm group-hover:text-tertiary transition-colors">SEC Issues New Guidance on Liquidity Pools</h3>
+<p class="font-body text-sm text-on-surface-variant italic">Regulatory shift sends ripples through DeFi markets...</p>
+</div>
+</div>
+<div class="flex gap-4 group cursor-pointer">
+<span class="font-label text-xs font-bold text-tertiary pt-1">07:15</span>
+<div class="space-y-1">
+<h3 class="font-headline font-bold text-sm group-hover:text-tertiary transition-colors">Apple's M4 Ultra Leaks Suggest Neural Leap</h3>
+<p class="font-body text-sm text-on-surface-variant italic">Supply chain reports point to 3nm specialized AI cores...</p>
+</div>
+</div>
+<div class="flex gap-4 group cursor-pointer">
+<span class="font-label text-xs font-bold text-tertiary pt-1">06:03</span>
+<div class="space-y-1">
+<h3 class="font-headline font-bold text-sm group-hover:text-tertiary transition-colors">Tokyo Startup Claims Quantum Supremacy</h3>
+<p class="font-body text-sm text-on-surface-variant italic">New error correction method might change everything...</p>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-outline-variant/10">
+<a class="font-headline text-sm font-bold text-primary flex items-center gap-2 hover:gap-3 transition-all" href="#">
+                            View All Events <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Asymmetric Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<article class="bg-surface-container-lowest rounded-xl overflow-hidden editorial-shadow hover:-translate-y-1 transition-all duration-300 flex flex-col group">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Minimalist architectural shot of a modern data center, soft blue and silver lighting, sleek metallic surfaces" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4fLr0tEmRtIa4sVBNMklEGskaEKEL988FzrtP3WbGqICNevnpBp4yS670-l_QY93YRGJwr5SoNzyrjLP6yvCh1_ItJDlMLsxFenkIX6oNc8n7ZnYU3EslDaOqTVZlHBXMMHAIt5krTGZmWxoXx1AsXPDhmwtuYqj2aTLVjx3j1aa7HeFncQMikzofBCj8fw5VtCRv3P8KytwHo9TU_U-WD_aIb93Bl0zZLxSutonFJx5hzmpwwNSGsxvwuLxLVMZlD6rk3Fb1AwUJ"/>
+</div>
+<div class="p-8 flex flex-col flex-grow">
+<div class="flex justify-between items-center mb-4">
+<span class="font-label text-[10px] font-extrabold text-outline tracking-widest uppercase">Startups</span>
+<span class="font-label text-[10px] text-outline italic">2 hours ago</span>
+</div>
+<h3 class="font-headline text-2xl font-extrabold mb-4 leading-tight">The Lean AI: Scaling Without the Burn</h3>
+<p class="font-body text-on-surface-variant leading-relaxed mb-6">How a new wave of founders is building unicorn-scale intelligence using fraction-of-the-cost open source models.</p>
+<div class="mt-auto">
+<button class="font-headline text-sm font-bold border-b-2 border-transparent hover:border-zinc-900 transition-all pb-1">Read More</button>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-surface-container-lowest rounded-xl overflow-hidden editorial-shadow hover:-translate-y-1 transition-all duration-300 flex flex-col group">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Macro close-up of a human eye reflecting a digital code stream, cinematic lighting, vibrant cyan and magenta highlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzpkyfBc7kgeovtjsq4Hp8v2gfNIcSQn-X-yiILWJPd0cZv_Pp_-mynL9QNCQbFERzlhArX8V8p6Mc_ErIP6lg3tmGsox4R15CrBoDA7pfAFybJ-jKXAo8Zm6n-IUE0FU2s2xZ7W-1TAFzzA51iPsD88FqwTnueOCX9Bdcr0cq1-9UUmyHHNmgOn7gFtI6ICbyicWbDvmN6lSIwTRVsSuS3RRxMo2_nvwrOH1gxROdaqSg7vnYM6C8ovaLYytG3CfGmPYSgiu4kgl1"/>
+</div>
+<div class="p-8 flex flex-col flex-grow">
+<div class="flex justify-between items-center mb-4">
+<span class="font-label text-[10px] font-extrabold text-outline tracking-widest uppercase">Big Tech</span>
+<span class="font-label text-[10px] text-outline italic">5 hours ago</span>
+</div>
+<h3 class="font-headline text-2xl font-extrabold mb-4 leading-tight">Privacy in the Age of Spatial Computing</h3>
+<p class="font-body text-on-surface-variant leading-relaxed mb-6">As headsets become our primary screens, the battle for our ocular data moves to the Supreme Court.</p>
+<div class="mt-auto">
+<button class="font-headline text-sm font-bold border-b-2 border-transparent hover:border-zinc-900 transition-all pb-1">Read More</button>
+</div>
+</div>
+</article>
+<!-- Card 3: Featured List/Trending -->
+<div class="bg-surface-container-low rounded-xl p-8 flex flex-col">
+<h2 class="font-headline text-xl font-extrabold mb-8 flex items-center justify-between">
+                    Trending
+                    <span class="material-symbols-outlined text-outline">trending_up</span>
+</h2>
+<div class="space-y-6">
+<div class="group cursor-pointer">
+<span class="text-3xl font-headline font-black text-outline/20 group-hover:text-tertiary/20 transition-colors">01</span>
+<h4 class="font-headline font-bold text-base -mt-4 group-hover:underline underline-offset-4 decoration-tertiary">The Rise of Sovereign AI Clouds</h4>
+</div>
+<div class="group cursor-pointer">
+<span class="text-3xl font-headline font-black text-outline/20 group-hover:text-tertiary/20 transition-colors">02</span>
+<h4 class="font-headline font-bold text-base -mt-4 group-hover:underline underline-offset-4 decoration-tertiary">Why Crypto Gaming Failed the 'Fun' Test</h4>
+</div>
+<div class="group cursor-pointer">
+<span class="text-3xl font-headline font-black text-outline/20 group-hover:text-tertiary/20 transition-colors">03</span>
+<h4 class="font-headline font-bold text-base -mt-4 group-hover:underline underline-offset-4 decoration-tertiary">Sustainable Server Farms: Iceland's Lead</h4>
+</div>
+<div class="group cursor-pointer">
+<span class="text-3xl font-headline font-black text-outline/20 group-hover:text-tertiary/20 transition-colors">04</span>
+<h4 class="font-headline font-bold text-base -mt-4 group-hover:underline underline-offset-4 decoration-tertiary">Adobe vs. The Creator Economy</h4>
+</div>
+</div>
+<div class="mt-auto pt-8">
+<div class="bg-surface-container-highest rounded-lg p-6 text-center">
+<p class="font-headline font-bold text-xs mb-3 text-on-surface-variant uppercase tracking-widest">Weekly Digest</p>
+<h5 class="font-body text-lg mb-4 italic">Join 40,000+ tech leads.</h5>
+<div class="flex gap-2">
+<input class="w-full text-xs bg-surface border-none rounded-full px-4 focus:ring-1 focus:ring-tertiary" placeholder="Email" type="email"/>
+<button class="bg-zinc-900 text-white p-2 rounded-full material-symbols-outlined">send</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<article class="bg-surface-container-lowest rounded-xl overflow-hidden editorial-shadow hover:-translate-y-1 transition-all duration-300 flex flex-col group lg:col-span-2">
+<div class="grid grid-cols-1 md:grid-cols-2">
+<div class="relative h-64 md:h-full overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Cyberpunk city alley at night with neon lights reflecting in puddles, cinematic mood, depth of field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDJjYMIJ6GyU6pWMgxVFogLFzlNInMkmbkq63rRPe8anvo-4yhqLMhf46Lp9uhe4Sfz7nhMFpKWye2_r1SeyPAVm7y7BKUbrTI_yWij5L49X1Cb71fdjwoJnjti-wh_mka4XF5nLO_JyQ_d2GT-RCrOAts8AT-Mf0BS8ydKMDMhkFlQto0H-wnt6h59SZKjAieFziCwQoTM9gbGl4jnEyY_kCczJTiX4A3XQBtIlUBpaov-gvRBKmLmFkA-Dgj7yA9xc8Upt1mJmJ_"/>
+</div>
+<div class="p-10 flex flex-col">
+<div class="flex justify-between items-center mb-4">
+<span class="font-label text-[10px] font-extrabold text-tertiary tracking-widest uppercase">Deep Analysis</span>
+<span class="font-label text-[10px] text-outline italic">Yesterday</span>
+</div>
+<h3 class="font-headline text-3xl font-extrabold mb-4 leading-tight">The Decentralized Dream: Why Web3 Still Matters</h3>
+<p class="font-body text-lg text-on-surface-variant leading-relaxed mb-6 italic">Beyond the speculation, the plumbing of the internet is being rebuilt. We talk to the architects of the new protocol layer.</p>
+<div class="mt-auto flex items-center gap-6">
+<button class="bg-surface-container-high text-on-surface-variant px-6 py-2 rounded-full font-headline font-bold text-xs hover:bg-surface-container-highest transition-colors">Read More</button>
+<span class="font-label text-[10px] text-outline font-bold uppercase tracking-widest">By Elena Vance</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 5 -->
+<article class="bg-surface-container-lowest rounded-xl overflow-hidden editorial-shadow hover:-translate-y-1 transition-all duration-300 flex flex-col group">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Abstract visualization of a neural network as glowing golden fibers, dark background, elegant and sophisticated" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvBQHtHbAoMzmrvv794yRtOdSj24q38TqgJqIhUTiUr_BkE3r468JsmS38tIptpnxrDjJLbDzWeugvqIs84yE-kYKcw_d7cMqGaXqulvH2sS8Ij_S94rLpAPlhuHgMxBkEYBnkllUbiyZP-Y_B_8OjuGmcmopvuhTn6rdJlfVVyJesaceJxrtK6Fx0hUnkC5VEVbM5620FJuV79NyH-07dcmQIrWLa29O_cNSunhisJdMCH4jw2AR5N-r3ekDVSNfxn54GtKHaxHAY"/>
+</div>
+<div class="p-8 flex flex-col flex-grow">
+<div class="flex justify-between items-center mb-4">
+<span class="font-label text-[10px] font-extrabold text-outline tracking-widest uppercase">Marketing</span>
+<span class="font-label text-[10px] text-outline italic">12 hours ago</span>
+</div>
+<h3 class="font-headline text-2xl font-extrabold mb-4 leading-tight">Algorithm Ethics: The Brand Safety Crisis</h3>
+<p class="font-body text-on-surface-variant leading-relaxed mb-6">Why Fortune 500 companies are pulling spend from automated ad exchanges in 2024.</p>
+<div class="mt-auto">
+<button class="font-headline text-sm font-bold border-b-2 border-transparent hover:border-zinc-900 transition-all pb-1">Read More</button>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-zinc-50 dark:bg-zinc-900 w-full py-12 px-6 mt-20">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-12 gap-8">
+<div class="flex flex-col gap-4 items-center md:items-start text-center md:text-left">
+<span class="font-['Manrope'] font-extrabold text-zinc-900 dark:text-zinc-100 text-xl tracking-tighter">Tech Pulse</span>
+<p class="font-['Newsreader'] italic text-base text-zinc-600 dark:text-zinc-400">© 2024 Tech Pulse. The Digital Atelier.</p>
+</div>
+<div class="flex gap-8">
+<a class="font-['Newsreader'] italic text-base text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors duration-200" href="#">About</a>
+<a class="font-['Newsreader'] italic text-base text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="font-['Newsreader'] italic text-base text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors duration-200" href="#">Contact</a>
+<a class="font-['Newsreader'] italic text-base text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors duration-200" href="#">RSS Feed</a>
+</div>
+<div class="flex gap-4">
+<button class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center hover:bg-white transition-all scale-95 active:scale-90 active:duration-100">
+<span class="material-symbols-outlined text-sm">language</span>
+</button>
+<button class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center hover:bg-white transition-all scale-95 active:scale-90 active:duration-100">
+<span class="material-symbols-outlined text-sm">share</span>
+</button>
+</div>
+</div>
+</footer>
+</body></html>

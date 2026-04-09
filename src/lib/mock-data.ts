@@ -518,9 +518,22 @@ const additionalArticles: Partial<Article>[] = [
   { id: 'mock-56', title: 'Mental Health Apps: Helpful Tool or Privacy Nightmare?', categories: ['Tech', 'Society'], tags: ['Mental Health', 'Privacy'] },
 ];
 
+const categoryImages: Record<string, string[]> = {
+  'AI': ['https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=600'],
+  'Crypto': ['https://images.unsplash.com/photo-1605792657660-596af9009e82?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&q=80&w=600'],
+  'Startups': ['https://images.unsplash.com/photo-1553028826-f4804a6dba3b?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&q=80&w=600'],
+  'Big Tech': ['https://images.unsplash.com/photo-1496096265110-f83ad7f96608?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=600'],
+  'Tech': ['https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=600'],
+  'Society': ['https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1516245834210-c4c142787335?auto=format&fit=crop&q=80&w=600']
+};
+
 let articleCounter = mockArticles.length;
 additionalArticles.forEach(article => {
     const randomDate = new Date(Date.now() - (articleCounter * 24 + Math.random() * 20) * 60 * 60 * 1000);
+    const category = article.categories && article.categories.length > 0 ? article.categories[0] : 'Tech';
+    const imageList = categoryImages[category] || categoryImages['Tech'];
+    const imageUrl = imageList[articleCounter % imageList.length];
+
     const fullArticle: Article = {
         id: article.id || `mock-${articleCounter + 1}`,
         title: article.title || 'Placeholder Title',
@@ -530,7 +543,7 @@ additionalArticles.forEach(article => {
         tags: article.tags || ['Tech'],
         categories: article.categories || ['Tech'],
         company: article.company || '',
-        imageUrl: `https://picsum.photos/seed/${article.id || articleCounter}/600/400`,
+        imageUrl: imageUrl,
         imageHint: 'tech abstract',
         authorId: `user-${(articleCounter % 3) + 1}`,
         publishedAt: randomDate.toISOString(),
@@ -540,5 +553,3 @@ additionalArticles.forEach(article => {
     mockArticles.push(fullArticle);
     articleCounter++;
 });
-
-    

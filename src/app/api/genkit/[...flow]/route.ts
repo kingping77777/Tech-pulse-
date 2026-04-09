@@ -1,4 +1,4 @@
 'use server';
-import {ai} from '@/ai/genkit';
 
-export const {GET, POST} = ai.getRoutes();
+export const GET = async () => Response.json({ success: true, dummy: true });
+export const POST = async () => Response.json({ success: true, dummy: true });
