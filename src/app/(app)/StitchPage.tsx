@@ -76,10 +76,10 @@ export function StitchPage() {
 <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent flex flex-col justify-end p-8">
 <div className="flex gap-3 mb-4">
 <span className="px-2 py-1 bg-primary-container/20 border border-primary-container/30 text-primary-container text-[10px] font-bold uppercase tracking-tighter headline-font backdrop-blur-md">
-                                Genkit Analysis: Critical Story
+                                Tech News
                             </span>
 <span className="px-2 py-1 bg-secondary-container/20 border border-secondary-container/30 text-secondary-container text-[10px] font-bold uppercase tracking-tighter headline-font backdrop-blur-md">
-                                Real-Time Intelligence
+                                Breaking News
                             </span>
 </div>
 <h1 className="text-4xl lg:text-6xl font-bold headline-font leading-[0.95] tracking-tighter mb-4 max-w-2xl text-primary drop-shadow-[0_4px_12px_rgba(0,242,255,0.2)]">

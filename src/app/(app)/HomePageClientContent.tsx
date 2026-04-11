@@ -1,16 +1,57 @@
 'use client';
 
-import { useState, useEffect, useMemo, useTransition } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { ArticleCard } from '@/components/ArticleCard';
 import type { Article } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
-import { useAutoRefresh } from '@/hooks/use-auto-refresh';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ThreeBackground } from '@/components/ThreeBackground';
+import { RefreshCw, TrendingUp } from 'lucide-react';
 
-const SIX_HOURS_IN_MS = 6 * 60 * 60 * 1000;
+// Fuzzy search — tolerates typos up to 2 chars off
+function fuzzyMatch(query: string, text: string): boolean {
+  const q = query.toLowerCase().trim();
+  const t = text.toLowerCase();
+  if (t.includes(q)) return true;
+  const words = q.split(/\s+/);
+  return words.some(word => {
+    if (t.includes(word)) return true;
+    if (word.length < 3) return false;
+    // Sliding window Levenshtein
+    for (let i = 0; i <= t.length - Math.max(1, word.length - 2); i++) {
+      const slice = t.slice(i, i + word.length + 1);
+      if (levenshtein(word, slice) <= 2) return true;
+    }
+    return false;
+  });
+}
+
+function levenshtein(a: string, b: string): number {
+  const m = a.length, n = b.length;
+  const dp: number[][] = Array.from({ length: m + 1 }, (_, i) =>
+    Array.from({ length: n + 1 }, (_, j) => i === 0 ? j : j === 0 ? i : 0)
+  );
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+// Trending topics to show in sidebar
+const TRENDING_TOPICS = [
+  { keyword: 'Gemini 2.5', score: 98, cat: 'AI' },
+  { keyword: 'Bitcoin ETF', score: 95, cat: 'Crypto' },
+  { keyword: 'OpenAI', score: 92, cat: 'AI' },
+  { keyword: 'Nvidia Blackwell', score: 90, cat: 'Hardware' },
+  { keyword: 'Web3 DeFi', score: 87, cat: 'Crypto' },
+  { keyword: 'Vision Pro 2', score: 85, cat: 'Big Tech' },
+  { keyword: 'Quantum Computing', score: 82, cat: 'Hardware' },
+  { keyword: 'Y Combinator', score: 79, cat: 'Startups' },
+];
+
+const FIVE_MINUTES_MS = 5 * 60 * 1000;
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -23,58 +64,81 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 24 } },
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 400, damping: 28 } },
 };
 
 export function HomePageClientContent({ articles: initialArticles }: { articles: Article[] }) {
   const [articles, setArticles] = useState<Article[]>(initialArticles || []);
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
-  const [isRefreshing, startRefresh] = useTransition();
-
-  useAutoRefresh(() => {
-    window.location.reload();
-  }, SIX_HOURS_IN_MS);
+  const router = useRouter();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setArticles(initialArticles);
   }, [initialArticles]);
 
+  // Auto-refresh every 5 minutes
+  useEffect(() => {
+    const autoRefresh = () => {
+      router.refresh();
+      setLastUpdated(new Date());
+    };
+
+    intervalRef.current = setInterval(autoRefresh, FIVE_MINUTES_MS);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [router]);
+
+  const handleManualRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    router.refresh();
+    setLastUpdated(new Date());
+    setTimeout(() => setIsRefreshing(false), 1200);
+  }, [router]);
+
   const filteredArticles = useMemo(() => {
     let filtered = articles;
     if (query) {
       filtered = filtered.filter(article =>
-        article.title.toLowerCase().includes(query.toLowerCase()) ||
-        (article.tags && article.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase())))
+        fuzzyMatch(query, article.title) ||
+        (article.tags && article.tags.some(tag => fuzzyMatch(query, tag))) ||
+        (article.categories && article.categories.some(cat => fuzzyMatch(query, cat)))
       );
     }
     return filtered;
   }, [articles, query]);
 
   const hasContent = filteredArticles && filteredArticles.length > 0;
-  
+
   const heroArticle = filteredArticles[0];
   const highlightArticles = filteredArticles.slice(1, 4);
   const remainingArticles = filteredArticles.slice(4);
+
+  const formatTime = (d: Date) =>
+    d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   return (
     <div className="space-y-12 relative pb-20">
 
       {!hasContent && (
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: 'spring', bounce: 0.5 }}>
-          <Card className="text-center p-12 bg-surface-container/40 backdrop-blur-xl border-white/10 rounded-xl overflow-hidden relative">
+          <Card className="text-center p-12 bg-[var(--surface-container)] border-white/10 rounded-xl overflow-hidden relative">
             <CardContent className="p-0 flex flex-col items-center">
-              <motion.span 
-                animate={{ rotate: [0, -10, 10, -10, 0] }} 
+              <motion.span
+                animate={{ rotate: [0, -10, 10, -10, 0] }}
                 transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
                 className="material-symbols-outlined text-6xl text-on-surface-variant mb-6 opacity-50"
               >
                 search_off
               </motion.span>
-              <h3 className="font-bold headline-font text-2xl text-primary-container mb-2">No Data Streams Found</h3>
-              <p className="text-on-surface-variant text-base max-w-md">
-                Awaiting neural node response for <span className="text-primary font-mono bg-primary/10 px-2 py-0.5 rounded">"{query}"</span>. Try different routing parameters to re-establish connection.
+              <h3 className="font-bold font-headline text-2xl text-[var(--primary)] mb-2">No Data Streams Found</h3>
+              <p className="text-[var(--on-surface-variant)] text-base max-w-md">
+                No results for <span className="text-[var(--primary)] font-mono bg-[var(--primary)]/10 px-2 py-0.5 rounded">"{query}"</span>. Try a different search.
               </p>
             </CardContent>
           </Card>
@@ -82,74 +146,114 @@ export function HomePageClientContent({ articles: initialArticles }: { articles:
       )}
 
       {hasContent && heroArticle && (
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ type: 'spring' as const, stiffness: 200, damping: 20 }}
-            className="relative group overflow-hidden bg-surface-container-low rounded-xl border border-white/10 shadow-2xl"
-          >
-            <ThreeBackground />
-            <div className="aspect-[16/9] md:aspect-[21/9] w-full overflow-hidden relative z-0">
-                <img 
-                    alt={heroArticle.title} 
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-40 mix-blend-overlay" 
-                    src={heroArticle.imageUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuCDmAR7GtZ8CMNwwZP6qUlObOeZzX4qIlySCq5dmcfyPaYgzAMZQJv4ap2ldi86WTDcJZxpGeDfoNt2lyDZ_g2_DQihPyJvriv890fV1VQ9wMY4D9_pBDm8fJ-OUhgGdMwHkWJYhiQrtxZW7idPgyJVY8iCD8FWFyFpXH9ZCVv5HYQi7pUVrbfKE1rEtTGPOXqSH6qq4Ne1r8pj6z-_mwIMKLN_jz-e5zcYELk0nUC86acWlnQUcRzQI_q9neG4SmaHo7d73orLVbI"}
-                />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent flex flex-col justify-end p-8 md:p-12 z-10">
-                <motion.div variants={containerVariants} initial="hidden" animate="show" className="max-w-3xl">
-                    <motion.div variants={itemVariants} className="flex gap-3 mb-6">
-                        <span className="px-3 py-1 bg-primary-container/20 border border-primary-container/30 text-primary-container text-[11px] font-bold uppercase tracking-widest headline-font backdrop-blur-md rounded-sm">
-                            {heroArticle.categories[0] || 'Genkit Analysis'}
-                        </span>
-                        <span className="px-3 py-1 bg-secondary-container/20 border border-secondary-container/30 text-secondary-container text-[11px] font-bold uppercase tracking-widest headline-font backdrop-blur-md rounded-sm">
-                            Real-Time Intelligence
-                        </span>
-                    </motion.div>
-                    <motion.h1 
-                      variants={itemVariants} 
-                      className="text-4xl md:text-5xl lg:text-7xl font-bold headline-font leading-[1] tracking-tighter mb-6 text-primary drop-shadow-[0_4px_12px_rgba(0,242,255,0.3)]"
-                    >
-                        {heroArticle.title}
-                    </motion.h1>
-                    <motion.p variants={itemVariants} className="text-on-surface-variant text-base md:text-lg max-w-xl mb-8 leading-relaxed">
-                        {heroArticle.summary}
-                    </motion.p>
-                    <motion.div variants={itemVariants} className="flex items-center gap-4">
-                        <Link href={`/article/${heroArticle.slug || heroArticle.id}`} className="px-8 py-3 bg-primary-container text-on-primary text-sm font-bold rounded-sm flex items-center gap-2 hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all">
-                            READ FULL BRIEF
-                            <span className="material-symbols-outlined text-sm">north_east</span>
-                        </Link>
-                    </motion.div>
-                </motion.div>
-            </div>
-          </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring' as const, stiffness: 200, damping: 20 }}
+          className="relative group overflow-hidden bg-[var(--surface-container-low)] rounded-xl border border-white/10 shadow-2xl"
+        >
+          <ThreeBackground />
+          <div className="aspect-[16/9] md:aspect-[21/9] w-full overflow-hidden relative z-0">
+            <img
+              alt={heroArticle.title}
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-50 mix-blend-overlay"
+              src={heroArticle.imageUrl || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1200'}
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent flex flex-col justify-end p-8 md:p-12 z-10">
+            <motion.div variants={containerVariants} initial="hidden" animate="show" className="max-w-3xl">
+              <motion.div variants={itemVariants} className="flex gap-3 mb-6 flex-wrap">
+                <span className="px-3 py-1 bg-[#00f2ff]/10 border border-[#00f2ff]/30 text-[#00f2ff] text-[11px] font-bold uppercase tracking-widest font-headline backdrop-blur-md rounded-sm">
+                  {heroArticle.categories[0] || 'Tech News'}
+                </span>
+                <span className="px-3 py-1 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-[11px] font-bold uppercase tracking-widest font-headline backdrop-blur-md rounded-sm">
+                  Breaking News
+                </span>
+              </motion.div>
+              <motion.h1
+                variants={itemVariants}
+                className="text-4xl md:text-5xl lg:text-7xl font-bold font-headline leading-[1] tracking-tighter mb-6 text-[var(--primary)] drop-shadow-[0_4px_12px_rgba(0,242,255,0.3)]"
+              >
+                {heroArticle.title}
+              </motion.h1>
+              <motion.p variants={itemVariants} className="text-[var(--on-surface-variant)] text-base md:text-lg max-w-xl mb-8 leading-relaxed">
+                {Array.isArray(heroArticle.summary) ? heroArticle.summary[0] : heroArticle.summary}
+              </motion.p>
+              <motion.div variants={itemVariants} className="flex items-center gap-4 flex-wrap">
+                <Link href={`/article/${heroArticle.slug || heroArticle.id}`} className="px-8 py-3 bg-[var(--primary-container)] text-[var(--on-primary)] text-sm font-bold rounded-sm flex items-center gap-2 hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all">
+                  READ FULL BRIEF
+                  <span className="material-symbols-outlined text-sm">north_east</span>
+                </Link>
+                {/* Refresh button */}
+                <button
+                  onClick={handleManualRefresh}
+                  className="flex items-center gap-2 px-4 py-3 rounded-sm border border-white/10 text-[var(--on-surface-variant)] hover:border-[var(--primary)]/40 hover:text-[var(--primary)] text-xs font-mono font-bold uppercase tracking-wider transition-all"
+                  disabled={isRefreshing}
+                >
+                  <RefreshCw size={12} className={isRefreshing ? 'animate-spin' : ''} />
+                  {isRefreshing ? 'Refreshing...' : `Updated ${formatTime(lastUpdated)}`}
+                </button>
+              </motion.div>
+            </motion.div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Trending Topics Strip */}
+      {hasContent && !query && (
+        <div className="relative">
+          <div className="flex items-center gap-3 mb-4">
+            <TrendingUp size={16} className="text-[var(--primary)]" />
+            <h2 className="text-sm font-mono font-bold text-[var(--primary)] uppercase tracking-widest">Trending Now</h2>
+            <div className="h-px flex-1 bg-gradient-to-r from-[var(--primary)]/20 to-transparent" />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {TRENDING_TOPICS.map((t, i) => {
+              // Find related article
+              const related = articles.find(a =>
+                a.title.toLowerCase().includes(t.keyword.toLowerCase()) ||
+                a.categories.some(c => c.toLowerCase().includes(t.cat.toLowerCase()))
+              );
+              return (
+                <Link
+                  key={t.keyword}
+                  href={related ? `/article/${related.slug || related.id}` : `/?q=${encodeURIComponent(t.keyword)}`}
+                  className="group flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--surface-container)] border border-[var(--outline-variant)] hover:border-[var(--primary)]/40 hover:bg-[var(--primary)]/5 transition-all duration-150"
+                >
+                  <span className="text-[9px] font-mono text-[var(--on-surface-variant)] font-bold">#{i + 1}</span>
+                  <span className="text-xs font-semibold text-[var(--on-surface)] group-hover:text-[var(--primary)] transition-colors">{t.keyword}</span>
+                  <span className="text-[9px] font-mono text-[var(--primary)] bg-[var(--primary)]/10 px-1.5 py-0.5 rounded">{t.score}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
       )}
 
       {hasContent && highlightArticles.length > 0 && (
-         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 pt-2">
             {highlightArticles.map((article, idx) => (
-                <div 
-                  key={article.id} 
-                  className="h-full animate-in fade-in fill-mode-both slide-in-from-bottom-8 duration-700" 
-                  style={{ animationDelay: `${idx * 150}ms` }}
+                <div
+                  key={article.id}
+                  className="h-full animate-in fade-in fill-mode-both slide-in-from-bottom-8 duration-500"
+                  style={{ animationDelay: `${idx * 80}ms` }}
                 >
-                  <div className={`h-full bg-surface-container-low/40 backdrop-blur-xl p-6 rounded-xl border-t-2 transition-all hover:bg-surface-container/80 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,242,255,0.15)] group border-l border-r border-b border-white/5 ${idx === 0 ? 'border-t-secondary-container' : 'border-t-primary-container'}`}>
-                      <div className="flex justify-between items-start mb-4">
-                          <span className={`text-[10px] font-mono tracking-widest uppercase bg-surface-container-highest px-2 py-1 rounded-sm ${idx === 0 ? 'text-secondary' : 'text-primary-container'}`}>
-                              {article.categories[0] || 'Venture Stream'}
-                          </span>
-                      </div>
-                      <Link href={`/article/${article.slug || article.id}`}>
-                        <h3 className={`text-xl font-bold headline-font leading-snug mb-3 transition-colors ${idx === 0 ? 'group-hover:text-secondary' : 'group-hover:text-primary-container'}`}>
-                            {article.title}
-                        </h3>
-                      </Link>
-                      <p className="text-on-surface-variant text-sm mb-4 leading-relaxed line-clamp-3 opacity-80">{Array.isArray(article.summary) ? article.summary.join(' ') : article.summary}</p>
-                      <div className="flex justify-between items-center text-[10px] font-mono opacity-40 mt-auto pt-4 border-t border-white/5">
-                          <span>{article.readTime ? `${article.readTime} MIN READ` : '5 MIN READ'}</span>
-                          <span>#{article.tags?.[0]?.toUpperCase() || 'TECH'}</span>
-                      </div>
+                  <div className={`h-full bg-zinc-900/40 backdrop-blur-xl p-5 rounded-xl border-t-2 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,242,255,0.12)] group border border-white/5 transition-[transform,box-shadow] duration-150 ${idx === 0 ? 'border-t-purple-500' : 'border-t-[#00f2ff]'}`}>
+                    <div className="flex justify-between items-start mb-3">
+                        <span className={`text-[10px] font-mono tracking-widest uppercase px-2 py-1 rounded-sm ${idx === 0 ? 'text-purple-300 bg-purple-500/10' : 'text-[#00f2ff] bg-[#00f2ff]/10'}`}>
+                            {article.categories[0] || 'Tech News'}
+                        </span>
+                    </div>
+                    <Link href={`/article/${article.slug || article.id}`}>
+                      <h3 className={`text-lg font-bold font-headline leading-snug mb-3 transition-colors ${idx === 0 ? 'group-hover:text-purple-300' : 'group-hover:text-[#00f2ff]'}`}>
+                          {article.title}
+                      </h3>
+                    </Link>
+                    <p className="text-zinc-400 text-sm mb-4 leading-relaxed line-clamp-3">{Array.isArray(article.summary) ? article.summary[0] : article.summary}</p>
+                    <div className="flex justify-between items-center text-[10px] font-mono text-zinc-600 mt-auto pt-3 border-t border-white/5">
+                        <span>{article.readTime ? `${article.readTime} MIN READ` : '5 MIN READ'}</span>
+                        <span>#{article.tags?.[0]?.toUpperCase() || 'TECH'}</span>
+                    </div>
                   </div>
                 </div>
             ))}
@@ -159,16 +263,16 @@ export function HomePageClientContent({ articles: initialArticles }: { articles:
       {hasContent && remainingArticles.length > 0 && (
          <section className="mt-16">
             <div className="flex items-center gap-4 mb-8">
-                <h2 className="text-3xl font-bold headline-font tracking-tighter text-on-surface">Deep Stream Analysis</h2>
-                <div className="h-px flex-1 bg-gradient-to-r from-outline-variant/50 to-transparent"></div>
+                <h2 className="text-2xl md:text-3xl font-bold font-headline tracking-tighter text-zinc-100">More Tech News</h2>
+                <div className="h-px flex-1 bg-gradient-to-r from-[#00f2ff]/20 to-transparent"></div>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                {remainingArticles.map((article, idx) => (
-                   <div 
-                     key={article.id} 
-                     className="animate-in fade-in zoom-in-95 slide-in-from-bottom-8 duration-500 fill-mode-both"
-                     style={{ animationDelay: `${idx * 50}ms` }}
+                   <div
+                     key={article.id}
+                     className="animate-in fade-in slide-in-from-bottom-4 duration-300 fill-mode-both"
+                     style={{ animationDelay: `${Math.min(idx * 30, 300)}ms` }}
                    >
                       <ArticleCard article={article} />
                    </div>

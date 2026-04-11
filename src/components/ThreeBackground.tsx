@@ -1,57 +1,83 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { MeshDistortMaterial } from '@react-three/drei';
+import { useTheme } from 'next-themes';
 import * as THREE from 'three';
 
 export type BackgroundVariant = 'sphere' | 'torus' | 'icosahedron';
 
-function AnimatedGeometry({ variant = 'sphere' }: { variant?: BackgroundVariant }) {
+function AnimatedGeometry({ variant = 'sphere', isDark }: { variant?: BackgroundVariant; isDark: boolean }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
-    if (meshRef.current) {
-      // Base Rotation
-      meshRef.current.rotation.x = state.clock.getElapsedTime() * 0.2;
-      meshRef.current.rotation.y = state.clock.getElapsedTime() * 0.3;
-
-      // Mouse interaction (react to mouse movement)
-      const mouseX = (state.pointer.x * Math.PI) / 4;
-      const mouseY = (state.pointer.y * Math.PI) / 4;
-      
-      // Smooth interpolation for rotation based on pointer
-      meshRef.current.rotation.y += (mouseX - meshRef.current.rotation.y) * 0.1;
-      meshRef.current.rotation.x += (-mouseY - meshRef.current.rotation.x) * 0.1;
-    }
+    if (!meshRef.current) return;
+    const t = state.clock.getElapsedTime();
+    // Smooth auto-rotation
+    meshRef.current.rotation.x = t * 0.15;
+    meshRef.current.rotation.y = t * 0.22;
+    // Mouse parallax
+    const mx = (state.pointer.x * Math.PI) / 5;
+    const my = (state.pointer.y * Math.PI) / 5;
+    meshRef.current.rotation.y += (mx - meshRef.current.rotation.y) * 0.06;
+    meshRef.current.rotation.x += (-my - meshRef.current.rotation.x) * 0.06;
   });
 
+  // In light mode use deeper teal/blue so it's visible against warm bg
+  const color = isDark ? '#00f2ff' : '#0070c0';
+  const opacity = isDark
+    ? variant === 'torus' ? 0.45 : 0.35
+    : variant === 'torus' ? 0.55 : 0.45;
+
   return (
-    <mesh ref={meshRef} scale={variant === 'sphere' ? 2.5 : variant === 'torus' ? 1.5 : 1.8}>
-      {variant === 'sphere' && <sphereGeometry args={[1, 64, 64]} />}
-      {variant === 'torus' && <torusKnotGeometry args={[1, 0.3, 128, 16]} />}
-      {variant === 'icosahedron' && <icosahedronGeometry args={[1, 0]} />}
-      
+    <mesh ref={meshRef} scale={variant === 'sphere' ? 2.4 : variant === 'torus' ? 1.6 : 2.0}>
+      {variant === 'sphere'      && <sphereGeometry args={[1, 32, 32]} />}
+      {variant === 'torus'       && <torusKnotGeometry args={[1, 0.3, 80, 14]} />}
+      {variant === 'icosahedron' && <icosahedronGeometry args={[1, 1]} />}
       <MeshDistortMaterial
-        color="#00f2ff" // Primary cyan/neon color
+        color={color}
         attach="material"
-        distort={variant === 'icosahedron' ? 0.0 : 0.4} // Sharp corners for Icosahedron
-        speed={2}
+        distort={variant === 'icosahedron' ? 0.1 : 0.35}
+        speed={1.8}
         wireframe={true}
         transparent={true}
-        opacity={variant === 'torus' ? 0.4 : 0.3}
+        opacity={opacity}
       />
     </mesh>
   );
 }
 
-export function ThreeBackground({ variant = 'sphere' }: { variant?: BackgroundVariant }) {
+interface ThreeBackgroundProps {
+  variant?: BackgroundVariant;
+  className?: string;
+}
+
+export function ThreeBackground({ variant = 'sphere', className = '' }: ThreeBackgroundProps) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
+
   return (
-    <div className="absolute inset-0 z-0 pointer-events-none mix-blend-screen opacity-60 flex items-center justify-center -translate-y-10 lg:-translate-y-0 text-center mx-auto" style={{ height: '600px', width: '100%' }}>
-      <Canvas camera={{ position: [0, 0, 5], fov: 45 }} className="w-full h-full">
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} />
-        <AnimatedGeometry variant={variant} />
+    <div
+      className={`absolute inset-0 z-0 pointer-events-none select-none ${className}`}
+      aria-hidden="true"
+      style={{
+        // In dark mode: screen blends bright cyan against dark
+        // In light mode: multiply blends dark blue against light bg — both visible
+        mixBlendMode: isDark ? 'screen' : 'multiply',
+        opacity: isDark ? 0.7 : 0.6,
+      }}
+    >
+      <Canvas
+        camera={{ position: [0, 0, 5], fov: 45 }}
+        className="w-full h-full"
+        dpr={[1, 1.5]}
+        gl={{ antialias: false, powerPreference: 'low-power' }}
+      >
+        <ambientLight intensity={isDark ? 0.5 : 0.8} />
+        <directionalLight position={[8, 8, 5]} intensity={isDark ? 0.8 : 1.2} />
+        <pointLight position={[-5, -5, -5]} intensity={isDark ? 0.3 : 0.5} color={isDark ? '#00f2ff' : '#0070c0'} />
+        <AnimatedGeometry variant={variant} isDark={isDark} />
       </Canvas>
     </div>
   );

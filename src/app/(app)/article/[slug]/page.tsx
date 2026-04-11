@@ -1,9 +1,11 @@
-import { getArticleBySlug } from '@/lib/data';
+import { getArticleBySlug, getArticles } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
-import Image from 'next/image';
+import { ArticleCard } from '@/components/ArticleCard';
 import { format } from 'date-fns';
 import Link from 'next/link';
+import { DynamicArticleImage } from '@/components/DynamicArticleImage';
+import { ThreeBackground } from '@/components/ThreeBackground';
 
 interface ArticlePageProps {
   params: Promise<{
@@ -19,6 +21,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     notFound();
   }
 
+  const rawFeed = await getArticles(6);
+  const feedArticles = rawFeed.filter(a => a.id !== article.id).slice(0, 4);
+
   const publishedDate = new Date(article.publishedAt);
   const formattedDate = format(publishedDate, 'MMM dd, yyyy');
   const formattedTime = format(publishedDate, 'HH:mm');
@@ -27,25 +32,23 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     <>
       <Header title="Intelligence Feed" />
       <main className="flex-1 overflow-y-auto w-full pb-24">
-        {/* Fullscreen Hero Image */}
+        {/* Fullscreen Hero Image + 3D */}
         <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh] overflow-hidden bg-surface-container">
-          <Image 
-            src={article.imageUrl} 
-            alt={article.title} 
-            fill 
-            className="object-cover"
-            priority
+          <ThreeBackground variant="icosahedron" />
+          <DynamicArticleImage
+            title={article.title}
+            fallbackUrl={article.imageUrl}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
-          <div className="absolute bottom-0 w-full p-6 md:p-12 lg:px-24">
-             <div className="flex gap-3 mb-4">
+          <div className="absolute bottom-0 w-full p-6 md:p-12 lg:px-24 z-10">
+             <div className="flex gap-3 mb-4 flex-wrap">
                {article.categories.map((category) => (
-                  <span key={category} className="px-3 py-1 bg-primary-container/30 border border-primary-container/20 text-primary-container text-xs font-bold uppercase tracking-widest backdrop-blur-md rounded-sm">
+                  <span key={category} className="px-3 py-1 bg-[#00f2ff]/20 border border-[#00f2ff]/30 text-[#00f2ff] text-xs font-bold uppercase tracking-widest backdrop-blur-md rounded-sm">
                       {category}
                   </span>
                ))}
             </div>
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold font-headline leading-tight max-w-4xl tracking-tighter text-on-surface">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold font-headline leading-tight max-w-4xl tracking-tighter text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
               {article.title}
             </h1>
           </div>
@@ -84,27 +87,29 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             {/* Main Content Area */}
             <article className="flex-1 order-1 md:order-2 max-w-none font-sans leading-relaxed text-on-surface/80">
               
-              <div className="relative p-6 md:p-8 bg-surface-container-high/40 backdrop-blur-xl border border-primary/30 rounded-xl mb-12 shadow-[0_0_30px_rgba(0,242,255,0.05)]">
-                 <div className="absolute -top-3 left-6 px-3 py-1 bg-primary text-on-primary font-mono text-[10px] font-bold tracking-widest uppercase rounded flex items-center gap-2">
-                    <span className="relative flex h-2 w-2">
-                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-on-primary opacity-75"></span>
-                       <span className="relative inline-flex rounded-full h-2 w-2 bg-on-primary"></span>
+              {/* ── AI Intelligence Summary Box ─────────────────── */}
+              <div className="relative pt-6 px-6 pb-6 md:pt-8 md:px-8 md:pb-8 bg-zinc-900/60 dark:bg-zinc-900/60 backdrop-blur-xl border border-[#00f2ff]/25 rounded-xl mb-12 shadow-[0_0_30px_rgba(0,242,255,0.07)] overflow-visible">
+                 {/* Label — sits inside the box, NOT floating above it */}
+                 <div className="flex items-center gap-2 mb-5 pb-4 border-b border-[#00f2ff]/10">
+                    <span className="relative flex h-2 w-2 flex-shrink-0">
+                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f2ff] opacity-75"></span>
+                       <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00f2ff]"></span>
                     </span>
-                    AI Intelligence Summary
+                    <span className="text-[10px] font-mono text-[#00f2ff] uppercase tracking-widest font-bold">AI Intelligence Summary</span>
                  </div>
                  
-                 <div className="mt-4 space-y-4">
+                 <div className="space-y-4">
                    {Array.isArray(article.summary) ? (
                      <ul className="space-y-4">
                        {article.summary.map((point, index) => (
                          <li key={index} className="flex gap-4">
-                           <span className="text-secondary font-mono text-lg shrink-0 mt-1">{`>`}</span>
-                           <p className="text-lg md:text-xl text-on-surface font-medium leading-snug">{point}</p>
+                           <span className="text-[#00f2ff] font-mono text-base shrink-0 mt-0.5">›</span>
+                           <p className="text-base md:text-lg text-zinc-100 dark:text-zinc-100 font-medium leading-relaxed">{point}</p>
                          </li>
                        ))}
                      </ul>
                    ) : (
-                     <p className="text-xl md:text-2xl text-on-surface font-medium leading-snug">
+                     <p className="text-lg md:text-xl text-zinc-100 dark:text-zinc-100 font-medium leading-relaxed">
                        {article.summary}
                      </p>
                    )}
@@ -122,6 +127,22 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               )}
             </article>
         </div>
+
+        {/* Intelligence Feed */}
+        {feedArticles.length > 0 && (
+          <div className="max-w-6xl mx-auto px-6 md:px-12 mt-24">
+             <div className="flex items-center gap-4 mb-8">
+                <h2 className="text-3xl font-bold font-headline tracking-tighter text-on-surface">Intelligence Feed</h2>
+                <div className="h-px flex-1 bg-gradient-to-r from-outline-variant/30 to-transparent"></div>
+             </div>
+             
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {feedArticles.map((feedArticle) => (
+                    <ArticleCard key={feedArticle.id} article={feedArticle} />
+                ))}
+             </div>
+          </div>
+        )}
       </main>
     </>
   );

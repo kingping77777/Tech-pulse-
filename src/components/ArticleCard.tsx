@@ -1,134 +1,145 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import type { Article } from '@/lib/types';
 import { useLikes } from '@/hooks/use-likes';
-import { MouseEvent, useRef } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { MouseEvent } from 'react';
+import { motion } from 'framer-motion';
 
-type ArticleCardProps = {
-  article: Article;
+// Category → color class mapping
+const CAT_COLORS: Record<string, { accent: string; bg: string; text: string }> = {
+  'AI':            { accent: '#00f2ff', bg: 'bg-cyan-400/15',   text: 'text-cyan-400' },
+  'Crypto':        { accent: '#f59e0b', bg: 'bg-amber-400/15',  text: 'text-amber-400' },
+  'Startups':      { accent: '#10b981', bg: 'bg-emerald-400/15',text: 'text-emerald-400' },
+  'Big Tech':      { accent: '#f97316', bg: 'bg-orange-400/15', text: 'text-orange-400' },
+  'Market Trends': { accent: '#8b5cf6', bg: 'bg-violet-400/15', text: 'text-violet-400' },
+  'Security':      { accent: '#ef4444', bg: 'bg-red-400/15',    text: 'text-red-400' },
+  'Hardware':      { accent: '#38bdf8', bg: 'bg-sky-400/15',    text: 'text-sky-400' },
+  'Web3':          { accent: '#ec4899', bg: 'bg-pink-400/15',   text: 'text-pink-400' },
+  'Quantum':       { accent: '#818cf8', bg: 'bg-indigo-400/15', text: 'text-indigo-400' },
+  'Tech':          { accent: '#94a3b8', bg: 'bg-slate-400/15',  text: 'text-slate-400' },
 };
+
+type ArticleCardProps = { article: Article };
 
 export function ArticleCard({ article }: ArticleCardProps) {
   const isExternal = !!article.url;
   const { isLiked, addLike, removeLike } = useLikes();
-  
   const liked = isLiked(article.id);
+  const cat = article.categories?.[0] || 'Tech';
+  const colors = CAT_COLORS[cat] || CAT_COLORS['Tech'];
 
   const handleLikeToggle = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    if (liked) {
-      removeLike(article.id);
-    } else {
-      addLike(article);
-    }
+    liked ? removeLike(article.id) : addLike(article);
   };
 
-  const CardLink = ({children}: {children: React.ReactNode}) => isExternal ? (
-    <a href={article.url} target="_blank" rel="noopener noreferrer" className="group block h-full">
-      {children}
-    </a>
-  ) : (
-    <Link href={`/article/${article.slug}`} className="group block h-full">
-      {children}
-    </Link>
-  )
+  // Fallback image pool — different image for each article based on hash
+  const fallbackImages = [
+    'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1531297172864-45d0614f8111?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1605792657660-596af9009e82?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1553028826-f4804a6dba3b?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&q=80&w=800',
+  ];
 
-  // Map first category to an icon
-  const getIcon = (cat: string) => {
-      const catLower = cat?.toLowerCase() || '';
-      if (catLower.includes('hardware')) return 'memory';
-      if (catLower.includes('startup') || catLower.includes('venture')) return 'rocket_launch';
-      if (catLower.includes('software') || catLower.includes('patch')) return 'terminal';
-      if (catLower.includes('game')) return 'videogame_asset';
-      if (catLower.includes('security')) return 'shield';
-      return 'science';
-  };
+  // Use article.imageUrl if available, otherwise pick a consistent fallback
+  const hash = article.id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  const imageUrl = article.imageUrl || fallbackImages[hash % fallbackImages.length];
 
-  const ref = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  
-  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 20 });
-  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 20 });
-  
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
+  const inner = (
+    <motion.div
+      className="group relative w-full rounded-xl overflow-hidden cursor-pointer border border-white/8"
+      style={{ aspectRatio: '16/9' }}
+      whileHover={{ y: -3, scale: 1.01 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+    >
+      {/* Full background image */}
+      <img
+        alt={article.title}
+        src={imageUrl}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        loading="lazy"
+        onError={(e) => {
+          (e.target as HTMLImageElement).src = fallbackImages[0];
+        }}
+      />
 
-  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!ref.current) return;
-      const rect = ref.current.getBoundingClientRect();
-      const width = rect.width;
-      const height = rect.height;
-      
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      
-      const xPct = mouseX / width - 0.5;
-      const yPct = mouseY / height - 0.5;
-      
-      x.set(xPct);
-      y.set(yPct);
-  };
-  
-  const onMouseLeave = () => {
-      x.set(0);
-      y.set(0);
-  };
+      {/* Dark gradient overlay — like the screenshot */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/10" />
+      {/* Subtle hover glow tint */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+        style={{ background: `radial-gradient(ellipse at bottom, ${colors.accent}40, transparent 70%)` }}
+      />
 
-  return (
-    <CardLink>
-      <div 
-         ref={ref} 
-         onMouseMove={onMouseMove} 
-         onMouseLeave={onMouseLeave} 
-         className="aspect-square group cursor-pointer relative"
-         style={{ perspective: 1000 }}
-      >
-        <motion.div 
-          style={{
-             rotateX,
-             rotateY,
-             transformStyle: "preserve-3d"
-          }}
-          className="w-full h-full bg-surface-container/30 backdrop-blur-xl relative overflow-hidden border border-white/5 rounded-xl shadow-lg transition-colors hover:shadow-[0_8px_30px_rgb(0,242,255,0.2)]"
+      {/* Top: Category badge + Like */}
+      <div className="absolute top-0 left-0 right-0 p-3 flex justify-between items-start">
+        <span
+          className={`inline-flex items-center px-2.5 py-1 rounded text-[10px] font-bold font-mono uppercase tracking-wider backdrop-blur-md border border-white/10 ${colors.bg} ${colors.text}`}
         >
-          <img 
-            alt={article.title} 
-            className="w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-110 transition-all duration-700" 
-            src={article.imageUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuCI9zxls0lWXLmMcKWRX-5MUPqkc7VhkOpvzMOx9-KPHrqMuMt6Y6Rm94YAe_vBXnwCdu_caPZneyfvygV_oo6QvgL4Bj_NoQjzug6XPOF2NfRkK6Op6tGPpN2W8YbMBykWN1t-1jdNPTahw8oQNxUY5JOXIFj1g7lEnWq-5JuVNTtcFm9FcXxQoBTNrGN9w2INAvagNcgzAyW1Od8odRyUhXjBSF7LwOHurZg8c9nc1RH7f-Cj7ldyynIPXU6qilvBN1_z-qgr-J0"}
-        />
-        <div className="absolute inset-0 p-6 flex flex-col justify-between bg-gradient-to-t from-surface to-transparent">
-            <div className="flex justify-between items-start">
-               <span className="material-symbols-outlined text-primary-container">
-                    {getIcon(article.categories[0] || article.tags[0])}
-               </span>
-               <button 
-                  onClick={handleLikeToggle}
-                  className={`material-symbols-outlined text-sm z-10 p-2 rounded-full backdrop-blur-md transition-colors ${liked ? 'text-red-400 bg-red-400/10 border border-red-400/20' : 'text-on-surface/40 hover:text-primary-container border border-outline-variant/20 bg-surface/40'}`}
-                  style={{fontVariationSettings: liked ? "'FILL' 1" : "'FILL' 0"}}
-                >
-                  favorite
-               </button>
-            </div>
-            <h4 
-               style={{ transform: "translateZ(80px)" }}
-               className="text-lg font-bold headline-font leading-tight text-on-surface group-hover:text-primary-container transition-colors"
-            >
-                {article.title}
-            </h4>
-        </div>
-        </motion.div>
+          {cat}
+        </span>
+        <button
+          onClick={handleLikeToggle}
+          className={`material-symbols-outlined text-sm p-1.5 rounded-full backdrop-blur-md transition-all border
+            ${liked
+              ? 'text-red-400 bg-red-500/25 border-red-500/40'
+              : 'text-white/70 hover:text-red-400 border-white/15 bg-black/30'
+            }`}
+          style={{ fontVariationSettings: liked ? "'FILL' 1" : "'FILL' 0" }}
+          aria-label="Like"
+        >favorite</button>
       </div>
-    </CardLink>
+
+      {/* Bottom: Title + source (matches the screenshot style) */}
+      <div className="absolute bottom-0 left-0 right-0 p-4">
+        <h4 className={`text-sm md:text-base font-bold font-headline leading-snug line-clamp-3 text-white group-hover:${colors.text} transition-colors mb-2`}>
+          {article.title}
+        </h4>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            {isExternal ? (
+              <>
+                <span className="w-4 h-4 rounded-sm bg-[#ff6600] text-white flex items-center justify-center font-bold text-[9px] flex-shrink-0">Y</span>
+                <span className="text-[9px] font-mono text-white/50 uppercase tracking-wider">Hacker News</span>
+              </>
+            ) : (
+              <span className="text-[9px] font-mono text-white/50 uppercase tracking-wider">Tech News</span>
+            )}
+          </div>
+          {article.readTime && (
+            <span className="text-[9px] font-mono text-white/40">{article.readTime}m read</span>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+
+  if (isExternal) {
+    return (
+      <a href={article.url} target="_blank" rel="noopener noreferrer" className="block">
+        {inner}
+      </a>
+    );
+  }
+  return (
+    <Link href={`/article/${article.slug}`} className="block">
+      {inner}
+    </Link>
   );
 }
 
 ArticleCard.Skeleton = function ArticleCardSkeleton() {
   return (
-    <div className="aspect-square bg-surface-container/50 animate-pulse border border-outline-variant/5 rounded-sm"></div>
-  )
-}
+    <div className="rounded-xl bg-[var(--surface-container)] animate-pulse border border-[var(--outline-variant)] overflow-hidden" style={{ aspectRatio: '16/9' }} />
+  );
+};
