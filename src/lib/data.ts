@@ -16,36 +16,45 @@ export const getHackerNewsArticles = async (limit = 20): Promise<Article[]> => {
   const now = Date.now();
 
   // Return cached stories if available and not stale
-  if (lastFetchTimestamp && (now - lastFetchTimestamp) < CACHE_DURATION_MINUTES * 60 * 1000 && cachedStories.length >= limit) {
+  if (lastFetchTimestamp && (now - lastFetchTimestamp) < CACHE_DURATION_MINUTES * 60 * 1000 && cachedStories.length >= Math.min(limit, 50)) {
     console.log('Returning cached Hacker News stories.');
     return mapHnStoriesToArticles(cachedStories.slice(0, limit));
   }
 
   console.log('Fetching fresh stories from Hacker News API.');
   try {
-    const response = await fetch(TOP_STORIES_URL, { cache: 'no-store' });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch top story IDs: ${response.statusText}`);
-    }
+    // 3-second timeout on the top-stories fetch
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const response = await fetch(TOP_STORIES_URL, { signal: controller.signal, cache: 'no-store' }).finally(() => clearTimeout(timeoutId));
+    if (!response.ok) throw new Error(`Failed to fetch top story IDs: ${response.statusText}`);
     const storyIds: number[] = await response.json();
 
-    // Fetch 3× limit as candidates to ensure enough pass the filter
-    const candidateIds = storyIds.slice(0, Math.min(limit * 3, 300));
-    
-    // Batch into chunks of 50 to avoid overloading the API
-    const CHUNK = 50;
+    // Cap candidates at 150 max (3× limit, max 150) to keep SSR fast
+    const candidateIds = storyIds.slice(0, Math.min(limit * 3, 150));
+
+    // Helper: fetch one story with a 2-second timeout
+    const fetchStory = async (id: number): Promise<HackerNewsStory | null> => {
+      try {
+        const ctrl = new AbortController();
+        const tid = setTimeout(() => ctrl.abort(), 2000);
+        const res = await fetch(`${ITEM_URL_BASE}${id}.json`, { signal: ctrl.signal }).finally(() => clearTimeout(tid));
+        if (!res.ok) return null;
+        return await res.json();
+      } catch { return null; }
+    };
+
+    // Batch into chunks of 30 to keep load manageable
+    const CHUNK = 30;
     const allItems: HackerNewsStory[] = [];
     for (let i = 0; i < candidateIds.length; i += CHUNK) {
       const chunk = candidateIds.slice(i, i + CHUNK);
-      const chunkResults = await Promise.allSettled(
-        chunk.map(id => fetch(`${ITEM_URL_BASE}${id}.json`).then(res => res.json()))
+      const chunkResults = await Promise.all(chunk.map(fetchStory));
+      const valid = chunkResults.filter(
+        (s): s is HackerNewsStory => s !== null && s.type === 'story' && !!s.url && !s.dead && !s.deleted
       );
-      const valid = chunkResults
-        .filter(r => r.status === 'fulfilled' && r.value)
-        .map(r => (r as PromiseFulfilledResult<HackerNewsStory>).value)
-        .filter(s => s && s.type === 'story' && s.url && !s.dead && !s.deleted);
       allItems.push(...valid);
-      if (allItems.length >= limit) break; // stop early once we have enough
+      if (allItems.length >= limit) break;
     }
 
     const fetchedStories = allItems.slice(0, limit);
@@ -56,13 +65,13 @@ export const getHackerNewsArticles = async (limit = 20): Promise<Article[]> => {
       console.log(`Successfully fetched and cached ${fetchedStories.length} stories from Hacker News.`);
       return mapHnStoriesToArticles(fetchedStories);
     } else {
-       console.warn('Hacker News API returned no valid stories. Falling back to mock data.');
-       return getMockArticles();
+      console.warn('Hacker News API returned no valid stories. Falling back to mock data.');
+      return getMockArticles(limit);
     }
   } catch (error) {
     console.error('Error fetching from Hacker News API:', error);
     console.log('Falling back to mock articles due to API error.');
-    return getMockArticles();
+    return getMockArticles(limit);
   }
 };
 

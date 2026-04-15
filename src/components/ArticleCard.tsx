@@ -35,32 +35,17 @@ export function ArticleCard({ article }: ArticleCardProps) {
     liked ? removeLike(article.id) : addLike(article);
   };
 
-  // Fallback image pool — different image for each article based on hash
-  const fallbackImages = [
-    'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1531297172864-45d0614f8111?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1605792657660-596af9009e82?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1553028826-f4804a6dba3b?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&q=80&w=800',
-  ];
-
-  // Use article.imageUrl if available, otherwise pick a consistent fallback
-  const hash = article.id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  const imageUrl = article.imageUrl || fallbackImages[hash % fallbackImages.length];
+  // Use article.imageUrl if available, otherwise pick a consistent deterministic fallback image
+  const imageUrl = article.imageUrl && article.imageUrl.startsWith('http') 
+    ? article.imageUrl 
+    : `https://picsum.photos/seed/${article.id}/800/450`;
 
   const inner = (
     <motion.div
-      className="group relative w-full rounded-xl overflow-hidden cursor-pointer border border-white/8"
+      className="group relative w-full rounded-xl overflow-hidden cursor-pointer border border-[var(--outline-variant)] hover:border-[var(--primary)]/40 hover:shadow-[0_20px_40px_-15px_rgba(0,242,255,0.2)] transition-all duration-500 ease-out"
       style={{ aspectRatio: '16/9' }}
-      whileHover={{ y: -3, scale: 1.01 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+      whileHover={{ y: -6, scale: 1.015 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 30, mass: 0.8 }}
     >
       {/* Full background image */}
       <img
@@ -69,7 +54,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         loading="lazy"
         onError={(e) => {
-          (e.target as HTMLImageElement).src = fallbackImages[0];
+          (e.target as HTMLImageElement).src = `https://picsum.photos/seed/fallback/800/450`;
         }}
       />
 

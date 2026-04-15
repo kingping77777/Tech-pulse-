@@ -17,11 +17,6 @@ export function Header({ title }: HeaderProps) {
         {title}
       </h1>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4 justify-end">
-        <ThemeToggle />
-        <Button variant="ghost" size="icon" className="rounded-full">
-          <Bell className="h-5 w-5" />
-          <span className="sr-only">Toggle notifications</span>
-        </Button>
       </div>
     </header>
   );

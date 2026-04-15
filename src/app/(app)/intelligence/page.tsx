@@ -9,36 +9,17 @@ import { ThreeBackground } from '@/components/ThreeBackground';
 
 const CAT_COLORS: Record<string, string> = {
   'AI':            'cat-ai',
-  'Crypto':        'cat-crypto',
-  'Startups':      'cat-startup',
   'Big Tech':      'cat-bigtech',
-  'Market Trends': 'cat-market',
   'Security':      'cat-sec',
   'Hardware':      'cat-default',
-  'Web3':          'cat-crypto',
   'Quantum':       'cat-ai',
   'Tech':          'cat-default',
 };
 
-const FALLBACK_IMGS = [
-  'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=600',
-  'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=600',
-  'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=600',
-  'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=600',
-  'https://images.unsplash.com/photo-1531297172864-45d0614f8111?auto=format&fit=crop&q=80&w=600',
-  'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=600',
-  'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=600',
-  'https://images.unsplash.com/photo-1605792657660-596af9009e82?auto=format&fit=crop&q=80&w=600',
-  'https://images.unsplash.com/photo-1553028826-f4804a6dba3b?auto=format&fit=crop&q=80&w=600',
-  'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=600',
-  'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=600',
-  'https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&q=80&w=600',
-];
-
 const getImg = (article: Article) => {
   if (article.imageUrl && article.imageUrl.startsWith('http')) return article.imageUrl;
-  const hash = article.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-  return FALLBACK_IMGS[hash % FALLBACK_IMGS.length];
+  const seed = article.id || article.title.replace(/\s+/g, '').slice(0, 15);
+  return `https://picsum.photos/seed/${seed}/800/450`;
 };
 
 const PAGE_SIZE = 20;
@@ -81,7 +62,7 @@ export default function IntelligencePage() {
     setVisibleCount(PAGE_SIZE);
   }, [activeCategory]);
 
-  const categories = ['All', 'AI', 'Crypto', 'Startups', 'Big Tech', 'Market Trends', 'Security', 'Hardware', 'Web3'];
+  const categories = ['All', 'AI', 'Big Tech', 'Security', 'Hardware'];
 
   const filtered = activeCategory === 'All'
     ? allArticles
@@ -205,7 +186,7 @@ export default function IntelligencePage() {
                           alt={article.title}
                           className="w-full h-full object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500"
                           loading="lazy"
-                          onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMGS[0]; }}
+                          onError={(e) => { (e.target as HTMLImageElement).src = `https://picsum.photos/seed/fallback/800/450`; }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface-container-low)] via-[var(--surface-container-low)]/40 to-transparent" />
                         <span className={`absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[10px] font-bold font-mono uppercase tracking-wider border backdrop-blur-md ${catClass}`}>

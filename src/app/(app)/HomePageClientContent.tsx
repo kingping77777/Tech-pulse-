@@ -199,36 +199,7 @@ export function HomePageClientContent({ articles: initialArticles }: { articles:
         </motion.div>
       )}
 
-      {/* Trending Topics Strip */}
-      {hasContent && !query && (
-        <div className="relative">
-          <div className="flex items-center gap-3 mb-4">
-            <TrendingUp size={16} className="text-[var(--primary)]" />
-            <h2 className="text-sm font-mono font-bold text-[var(--primary)] uppercase tracking-widest">Trending Now</h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-[var(--primary)]/20 to-transparent" />
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {TRENDING_TOPICS.map((t, i) => {
-              // Find related article
-              const related = articles.find(a =>
-                a.title.toLowerCase().includes(t.keyword.toLowerCase()) ||
-                a.categories.some(c => c.toLowerCase().includes(t.cat.toLowerCase()))
-              );
-              return (
-                <Link
-                  key={t.keyword}
-                  href={related ? `/article/${related.slug || related.id}` : `/?q=${encodeURIComponent(t.keyword)}`}
-                  className="group flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--surface-container)] border border-[var(--outline-variant)] hover:border-[var(--primary)]/40 hover:bg-[var(--primary)]/5 transition-all duration-150"
-                >
-                  <span className="text-[9px] font-mono text-[var(--on-surface-variant)] font-bold">#{i + 1}</span>
-                  <span className="text-xs font-semibold text-[var(--on-surface)] group-hover:text-[var(--primary)] transition-colors">{t.keyword}</span>
-                  <span className="text-[9px] font-mono text-[var(--primary)] bg-[var(--primary)]/10 px-1.5 py-0.5 rounded">{t.score}</span>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
+
 
       {hasContent && highlightArticles.length > 0 && (
          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 pt-2">
@@ -269,13 +240,15 @@ export function HomePageClientContent({ articles: initialArticles }: { articles:
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                {remainingArticles.map((article, idx) => (
-                   <div
+                   <motion.div
                      key={article.id}
-                     className="animate-in fade-in slide-in-from-bottom-4 duration-300 fill-mode-both"
-                     style={{ animationDelay: `${Math.min(idx * 30, 300)}ms` }}
+                     initial={{ opacity: 0, y: 40 }}
+                     whileInView={{ opacity: 1, y: 0 }}
+                     viewport={{ once: true, margin: '-50px' }}
+                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: (idx % 4) * 0.1 }}
                    >
                       <ArticleCard article={article} />
-                   </div>
+                   </motion.div>
                ))}
             </div>
          </section>

@@ -3,7 +3,7 @@ import { getArticles } from '@/lib/data';
 import { HomePageClientContent } from '@/app/(app)/HomePageClientContent';
 
 export default async function HomePage() {
-  // Fetch up to 100 articles to ensure there's plenty of news on the front page
+  // Fetch 100 for SSR — fast and reliable. Client-side refresh via /api/articles gets more.
   const allArticles = await getArticles(100);
   
   // Sort articles by published date, newest first

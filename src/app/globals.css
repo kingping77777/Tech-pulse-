@@ -3,66 +3,63 @@
 @tailwind utilities;
 
 /* ══════════════════════════════════════════════════════════
-   CSS CUSTOM PROPERTIES — DARK MODE ONLY THEME TOKENS
+   DARK MODE ONLY — CSS CUSTOM PROPERTIES
    ══════════════════════════════════════════════════════════ */
+:root,
+.dark {
+  /* Required by Tailwind's bg-background / text-foreground */
+  --background: 5 5 10;
+  --foreground: 240 240 255;
+  --card: 22 22 31;
+  --card-foreground: 240 240 255;
+  --popover: 14 14 21;
+  --popover-foreground: 240 240 255;
+  --primary: 190 245 255;
+  --primary-foreground: 0 0 0;
+  --secondary: 206 93 255;
+  --secondary-foreground: 0 0 0;
+  --muted: 30 30 42;
+  --muted-foreground: 136 136 170;
+  --accent: 0 242 255;
+  --accent-foreground: 0 0 0;
+  --destructive: 239 68 68;
+  --destructive-foreground: 255 255 255;
+  --border: 42 42 58;
+  --input: 22 22 31;
+  --ring: 0 242 255;
+  --radius: 0.5rem;
 
-/* Always dark — no light mode */
-:root {
-  --background:           #05050A;
-  --foreground:           #F0F0FF;
-  --card-bg:              #16161F;
-  --surface:              #111118;
-  --surface-container:    #16161F;
-  --surface-container-low: #0E0E15;
-  --surface-container-high:#1E1E2A;
+  /* Custom tokens */
+  --surface:                  #111118;
+  --surface-container:        #16161F;
+  --surface-container-low:    #0E0E15;
+  --surface-container-high:   #1E1E2A;
   --surface-container-highest:#252535;
-  --on-surface:           #F0F0FF;
-  --on-surface-variant:   #8888AA;
-  --outline-variant:      #2A2A3A;
-  --primary:              #00F2FF;
-  --primary-container:    #00F2FF;
-  --on-primary:           #000000;
-  --secondary:            #CE5DFF;
-  --secondary-container:  #CE5DFF;
-  --on-secondary:         #000000;
-  --accent-neon:          #00F2FF;
-  --border-subtle:        rgba(255,255,255,0.05);
-  --shadow-card:          0 4px 24px rgba(0,0,0,0.4);
+  --on-surface:               #F0F0FF;
+  --on-surface-variant:       #8888AA;
+  --outline-variant:          #2A2A3A;
+  --primary-hex:              #00F2FF;
+  --secondary-hex:            #CE5DFF;
+  --accent-neon:              #00F2FF;
+  --border-subtle:            rgba(255,255,255,0.05);
 }
 
 /* ══════════════════════════════════════════════════════════
-   TAILWIND BRIDGE — map CSS vars to class names
-   ══════════════════════════════════════════════════════════ */
-.bg-surface               { background-color: var(--surface) !important; }
-.bg-surface-container     { background-color: var(--surface-container) !important; }
-.bg-surface-container\/40 { background-color: color-mix(in srgb, var(--surface-container) 40%, transparent) !important; }
-.bg-surface-container-low { background-color: var(--surface-container-low) !important; }
-.bg-surface-container-high{ background-color: var(--surface-container-high) !important; }
-.bg-surface-container-highest{ background-color: var(--surface-container-highest) !important; }
-.text-on-surface          { color: var(--on-surface) !important; }
-.text-on-surface-variant  { color: var(--on-surface-variant) !important; }
-.text-primary             { color: var(--primary) !important; }
-.text-primary-container   { color: var(--primary-container) !important; }
-.text-secondary           { color: var(--secondary) !important; }
-.text-secondary-container { color: var(--secondary-container) !important; }
-.text-on-primary          { color: var(--on-primary) !important; }
-.border-outline-variant   { border-color: var(--outline-variant) !important; }
-.bg-primary-container     { background-color: var(--primary-container) !important; }
-.bg-secondary-container   { background-color: var(--secondary-container) !important; }
-.border-primary-container { border-color: var(--primary-container) !important; }
-.border-secondary-container{ border-color: var(--secondary-container) !important; }
-
-/* ══════════════════════════════════════════════════════════
-   BASE — body, reset
+   BASE RESET
    ══════════════════════════════════════════════════════════ */
 @layer base {
+  * { border-color: hsl(var(--border)); }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    background-color: var(--background);
-    color: var(--foreground);
+    background-color: rgb(5, 5, 10);
+    color: rgb(240, 240, 255);
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Only interactive elements get transitions — performance fix */
   button, a, input, select, textarea {
     transition: color 150ms ease, background-color 150ms ease,
                 border-color 150ms ease, box-shadow 150ms ease,
@@ -70,7 +67,7 @@
   }
 
   *:focus-visible {
-    outline: 2px solid var(--primary);
+    outline: 2px solid var(--primary-hex);
     outline-offset: 2px;
   }
 }
@@ -129,15 +126,9 @@
 .animate-spin-slow  { animation: spin-slow 12s linear infinite; }
 .animate-ticker     { animation: ticker-scroll 30s linear infinite; }
 
-.editorial-shadow   { box-shadow: 0 20px 40px rgba(45,51,56,0.06); }
 .custom-glass {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-}
-.shimmer-text {
-  background: linear-gradient(90deg, transparent, rgba(0,242,255,0.15), transparent);
-  background-size: 200% 100%;
-  animation: shimmer 3s infinite linear;
 }
 .notif-dropdown { animation: slide-down 0.2s ease-out; }
 
@@ -161,10 +152,10 @@
 /* ══════════════════════════════════════════════════════════
    CATEGORY PILL COLORS
    ══════════════════════════════════════════════════════════ */
-.cat-ai      { background: rgba(0,242,255,0.12); color: #00c8d4; border-color: rgba(0,242,255,0.25); }
-.cat-crypto  { background: rgba(255,165,0,0.12);  color: #f59e0b; border-color: rgba(255,165,0,0.25); }
-.cat-startup { background: rgba(16,185,129,0.12); color: #10b981; border-color: rgba(16,185,129,0.25); }
-.cat-bigtech { background: rgba(249,115,22,0.12); color: #f97316; border-color: rgba(249,115,22,0.25); }
-.cat-market  { background: rgba(139,92,246,0.12); color: #8b5cf6; border-color: rgba(139,92,246,0.25); }
-.cat-sec     { background: rgba(239,68,68,0.12);  color: #ef4444; border-color: rgba(239,68,68,0.25); }
-.cat-default { background: rgba(107,114,128,0.12);color: #6b7280; border-color: rgba(107,114,128,0.25); }
+.cat-ai      { background: rgba(0,242,255,0.12); color: #00c8d4; border: 1px solid rgba(0,242,255,0.25); }
+.cat-crypto  { background: rgba(255,165,0,0.12);  color: #f59e0b; border: 1px solid rgba(255,165,0,0.25); }
+.cat-startup { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.cat-bigtech { background: rgba(249,115,22,0.12); color: #f97316; border: 1px solid rgba(249,115,22,0.25); }
+.cat-market  { background: rgba(139,92,246,0.12); color: #8b5cf6; border: 1px solid rgba(139,92,246,0.25); }
+.cat-sec     { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+.cat-default { background: rgba(107,114,128,0.12);color: #6b7280; border: 1px solid rgba(107,114,128,0.25); }
