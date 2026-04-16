@@ -7,7 +7,13 @@ let cachedStories: HackerNewsStory[] = [];
 let lastFetchTimestamp: number | null = null;
 const CACHE_DURATION_MINUTES = 5; // 5 minutes for fresh news
 
+export function clearCache() {
+  cachedStories = [];
+  lastFetchTimestamp = null;
+}
+
 // --- NEW HACKER NEWS FETCHER ---
+
 
 const TOP_STORIES_URL = 'https://hacker-news.firebaseio.com/v0/topstories.json';
 const ITEM_URL_BASE = 'https://hacker-news.firebaseio.com/v0/item/';

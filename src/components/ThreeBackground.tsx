@@ -32,7 +32,7 @@ function AnimatedGeometry({ variant = 'sphere', isDark }: { variant?: Background
     : variant === 'torus' ? 0.55 : 0.45;
 
   const baseScale = variant === 'sphere' ? 2.4 : variant === 'torus' ? 1.6 : 2.0;
-  const responsiveScale = viewport.width < 5 ? baseScale * 0.55 : baseScale;
+  const responsiveScale = Math.min(1, viewport.width / 6) * baseScale;
 
   return (
     <mesh ref={meshRef} scale={responsiveScale}>
