@@ -158,31 +158,31 @@ export function HomePageClientContent({ articles: initialArticles }: { articles:
           className="relative group overflow-hidden bg-[var(--surface-container-low)] rounded-xl border border-white/10 shadow-2xl"
         >
           <ThreeBackground />
-          <div className="min-h-[350px] md:min-h-[500px] aspect-[4/3] md:aspect-[21/9] w-full overflow-hidden relative z-0 bg-zinc-950">
+          <div className="min-h-[480px] md:min-h-[550px] aspect-auto md:aspect-[21/9] w-full overflow-hidden relative z-0 bg-zinc-950">
             <img
               alt={heroArticle.title}
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-60"
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-50"
               src={heroArticle.imageUrl || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1200'}
               loading="eager"
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent flex flex-col justify-end p-8 md:p-12 z-10">
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/80 md:via-zinc-950/60 to-transparent flex flex-col justify-end p-5 sm:p-8 md:p-12 z-10">
             <motion.div variants={containerVariants} initial="hidden" animate="show" className="max-w-3xl">
-              <motion.div variants={itemVariants} className="flex gap-3 mb-6 flex-wrap">
-                <span className="px-3 py-1 bg-[#00f2ff]/10 border border-[#00f2ff]/30 text-[#00f2ff] text-[11px] font-bold uppercase tracking-widest font-headline backdrop-blur-md rounded-sm">
+              <motion.div variants={itemVariants} className="flex gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
+                <span className="px-2 sm:px-3 py-1 bg-[#00f2ff]/10 border border-[#00f2ff]/30 text-[#00f2ff] text-[10px] sm:text-[11px] font-bold uppercase tracking-widest font-headline backdrop-blur-md rounded-sm">
                   {heroArticle.categories[0] || 'Tech News'}
                 </span>
-                <span className="px-3 py-1 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-[11px] font-bold uppercase tracking-widest font-headline backdrop-blur-md rounded-sm">
+                <span className="px-2 sm:px-3 py-1 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest font-headline backdrop-blur-md rounded-sm">
                   Breaking News
                 </span>
               </motion.div>
               <motion.h1
                 variants={itemVariants}
-                className="text-4xl md:text-5xl lg:text-7xl font-bold font-headline leading-[1] tracking-tighter mb-6 text-[var(--primary)] drop-shadow-[0_4px_12px_rgba(0,242,255,0.3)]"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold font-headline leading-[1.1] md:leading-[1] tracking-tighter mb-4 sm:mb-6 text-[var(--primary)] drop-shadow-[0_4px_12px_rgba(0,242,255,0.3)] line-clamp-3 md:line-clamp-none"
               >
                 {heroArticle.title}
               </motion.h1>
-              <motion.p variants={itemVariants} className="text-[var(--on-surface-variant)] text-base md:text-lg max-w-xl mb-8 leading-relaxed">
+              <motion.p variants={itemVariants} className="text-[var(--on-surface-variant)] text-sm sm:text-base md:text-lg max-w-xl mb-6 sm:mb-8 leading-relaxed line-clamp-3 md:line-clamp-none">
                 {Array.isArray(heroArticle.summary) ? heroArticle.summary[0] : heroArticle.summary}
               </motion.p>
               <motion.div variants={itemVariants} className="flex items-center gap-4 flex-wrap">
