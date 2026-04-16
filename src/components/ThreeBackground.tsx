@@ -32,10 +32,9 @@ function AnimatedGeometry({ variant = 'sphere', isDark }: { variant?: Background
     : variant === 'torus' ? 0.55 : 0.45;
 
   const baseScale = variant === 'sphere' ? 2.4 : variant === 'torus' ? 1.6 : 2.0;
-  const responsiveScale = Math.min(1, viewport.width / 6) * baseScale;
 
   return (
-    <mesh ref={meshRef} scale={responsiveScale}>
+    <mesh ref={meshRef} scale={baseScale}>
       {variant === 'sphere'      && <sphereGeometry args={[1, 24, 24]} />}
       {variant === 'torus'       && <torusKnotGeometry args={[1, 0.3, 64, 12]} />}
       {variant === 'icosahedron' && <icosahedronGeometry args={[1, 1]} />}
