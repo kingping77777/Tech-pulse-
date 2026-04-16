@@ -111,15 +111,8 @@ export function ArticleCard({ article }: ArticleCardProps) {
     </motion.div>
   );
 
-  if (isExternal) {
-    return (
-      <a href={article.url} target="_blank" rel="noopener noreferrer" className="block">
-        {inner}
-      </a>
-    );
-  }
   return (
-    <Link href={`/article/${article.slug}`} className="block">
+    <Link href={`/article/${article.slug || article.id}`} className="block">
       {inner}
     </Link>
   );

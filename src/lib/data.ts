@@ -126,7 +126,11 @@ export async function getArticleBySlug(slug: string): Promise<Article | undefine
   }
 
   const allArticles = await getArticles(50);
-  return allArticles.find(a => a.slug === slug || a.id === slug);
+  const found = allArticles.find(a => a.slug === slug || a.id === slug);
+  if (found) return found;
+
+  const mockArticles = getMockArticles();
+  return mockArticles.find(a => a.slug === slug || a.id === slug);
 }
 
 
