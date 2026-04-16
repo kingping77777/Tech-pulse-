@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { MeshDistortMaterial } from '@react-three/drei';
 import { useTheme } from 'next-themes';
 import * as THREE from 'three';
