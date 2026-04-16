@@ -259,13 +259,59 @@ const mapHnStoriesToArticles = (stories: HackerNewsStory[]): Article[] => {
     ];
   };
 
+  // Deep copy the pools to mutate and remove used images
+  const pools: Record<string, string[]> = {
+    'AI': [...categoryImages['AI']],
+    'Crypto': [...categoryImages['Crypto']],
+    'Startups': [...categoryImages['Startups']],
+    'Big Tech': [...categoryImages['Big Tech']],
+    'Market Trends': [...categoryImages['Market Trends']],
+    'Security': [...categoryImages['Security']],
+    'Hardware': [...categoryImages['Hardware']],
+    'Web3': [...categoryImages['Web3']],
+    'Quantum': [...categoryImages['Quantum']],
+    'Tech': [...categoryImages['Tech']],
+  };
+
+  // Extract all 80 images into a flat fallback pool just in case
+  const globalPool = Object.values(categoryImages).flat();
+  const usedImages = new Set<string>();
+
   return stories.map((story, index) => {
     const randomUser = users[index % users.length];
     const category = categorizeHackerNewsStory(story.title);
     
-    // Pick image using story.id as hash so each story always gets the same unique image
-    const pool = categoryImages[category] || categoryImages['Tech'];
-    const imageUrl = pool[story.id % pool.length];
+    let imageUrl = '';
+    const catPool = pools[category] || pools['Tech'];
+    
+    // 1. Try to get a unique image from the article's own category
+    while (catPool.length > 0) {
+      // Pull a deterministic index based on story.id
+      const pIndex = story.id % catPool.length;
+      const candidate = catPool.splice(pIndex, 1)[0]; // Remove to prevent reuse
+      
+      if (!usedImages.has(candidate)) {
+        imageUrl = candidate;
+        usedImages.add(candidate);
+        break;
+      }
+    }
+
+    // 2. If the category ran out of unique images, steal an unused image from the global pool
+    if (!imageUrl) {
+      for (const candidate of globalPool) {
+        if (!usedImages.has(candidate)) {
+          imageUrl = candidate;
+          usedImages.add(candidate);
+          break;
+        }
+      }
+    }
+
+    // 3. Absolute mathematical fallback if more than 80 articles are fetched
+    if (!imageUrl) {
+      imageUrl = `https://picsum.photos/seed/techpulse-${story.id}/800/600`;
+    }
 
     return {
       id: `hn-${story.id}`,
