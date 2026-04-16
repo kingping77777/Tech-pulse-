@@ -10,6 +10,7 @@ export type BackgroundVariant = 'sphere' | 'torus' | 'icosahedron';
 
 function AnimatedGeometry({ variant = 'sphere', isDark }: { variant?: BackgroundVariant; isDark: boolean }) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const { viewport } = useThree();
 
   useFrame((state) => {
     if (!meshRef.current) return;
@@ -30,8 +31,11 @@ function AnimatedGeometry({ variant = 'sphere', isDark }: { variant?: Background
     ? variant === 'torus' ? 0.45 : 0.35
     : variant === 'torus' ? 0.55 : 0.45;
 
+  const baseScale = variant === 'sphere' ? 2.4 : variant === 'torus' ? 1.6 : 2.0;
+  const responsiveScale = viewport.width < 5 ? baseScale * 0.55 : baseScale;
+
   return (
-    <mesh ref={meshRef} scale={variant === 'sphere' ? 2.4 : variant === 'torus' ? 1.6 : 2.0}>
+    <mesh ref={meshRef} scale={responsiveScale}>
       {variant === 'sphere'      && <sphereGeometry args={[1, 24, 24]} />}
       {variant === 'torus'       && <torusKnotGeometry args={[1, 0.3, 64, 12]} />}
       {variant === 'icosahedron' && <icosahedronGeometry args={[1, 1]} />}
