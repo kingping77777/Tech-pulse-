@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { MeshDistortMaterial } from '@react-three/drei';
 import { useTheme } from 'next-themes';
@@ -32,8 +32,8 @@ function AnimatedGeometry({ variant = 'sphere', isDark }: { variant?: Background
 
   return (
     <mesh ref={meshRef} scale={variant === 'sphere' ? 2.4 : variant === 'torus' ? 1.6 : 2.0}>
-      {variant === 'sphere'      && <sphereGeometry args={[1, 32, 32]} />}
-      {variant === 'torus'       && <torusKnotGeometry args={[1, 0.3, 80, 14]} />}
+      {variant === 'sphere'      && <sphereGeometry args={[1, 24, 24]} />}
+      {variant === 'torus'       && <torusKnotGeometry args={[1, 0.3, 64, 12]} />}
       {variant === 'icosahedron' && <icosahedronGeometry args={[1, 1]} />}
       <MeshDistortMaterial
         color={color}
@@ -55,6 +55,22 @@ interface ThreeBackgroundProps {
 
 export function ThreeBackground({ variant = 'sphere', className = '' }: ThreeBackgroundProps) {
   const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div
+        className={`absolute inset-0 z-0 pointer-events-none select-none ${className}`}
+        aria-hidden="true"
+        style={{ opacity: 0 }}
+      />
+    );
+  }
+
   const isDark = resolvedTheme === 'dark';
 
   return (
@@ -72,7 +88,7 @@ export function ThreeBackground({ variant = 'sphere', className = '' }: ThreeBac
         camera={{ position: [0, 0, 5], fov: 45 }}
         className="w-full h-full"
         dpr={[1, 1.5]}
-        gl={{ antialias: false, powerPreference: 'low-power' }}
+        gl={{ antialias: false, powerPreference: 'low-power', alpha: true }}
       >
         <ambientLight intensity={isDark ? 0.5 : 0.8} />
         <directionalLight position={[8, 8, 5]} intensity={isDark ? 0.8 : 1.2} />

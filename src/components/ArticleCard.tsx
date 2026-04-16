@@ -54,7 +54,9 @@ export function ArticleCard({ article }: ArticleCardProps) {
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         loading="lazy"
         onError={(e) => {
-          (e.target as HTMLImageElement).src = `https://picsum.photos/seed/fallback/800/450`;
+          if ((e.target as HTMLImageElement).src !== 'https://picsum.photos/seed/fallback/800/450') {
+            (e.target as HTMLImageElement).src = 'https://picsum.photos/seed/fallback/800/450';
+          }
         }}
       />
 

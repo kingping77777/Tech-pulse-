@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 
 interface DynamicArticleImageProps {
   title: string;
@@ -16,15 +15,15 @@ export function DynamicArticleImage({ title, fallbackUrl }: DynamicArticleImageP
     : `https://picsum.photos/seed/${seed}/800/450`;
 
   return (
-    <Image
+    <img
       src={imageUrl}
       alt={title}
-      fill
-      className="object-cover opacity-80 transition-all duration-700"
-      priority
+      className="absolute inset-0 w-full h-full object-cover opacity-80 transition-all duration-700"
       onError={(e) => {
-        // If the image fails, fall back
-        (e.target as HTMLImageElement).src = `https://picsum.photos/seed/fallback/800/450`;
+        // If the image fails, fall back to a local placeholder or simply null it out to avoid loops
+        if ((e.target as HTMLImageElement).src !== 'https://picsum.photos/seed/fallback/800/450') {
+           (e.target as HTMLImageElement).src = 'https://picsum.photos/seed/fallback/800/450';
+        }
       }}
     />
   );

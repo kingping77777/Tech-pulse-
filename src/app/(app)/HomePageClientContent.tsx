@@ -76,6 +76,11 @@ export function HomePageClientContent({ articles: initialArticles }: { articles:
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     setArticles(initialArticles);
@@ -153,11 +158,12 @@ export function HomePageClientContent({ articles: initialArticles }: { articles:
           className="relative group overflow-hidden bg-[var(--surface-container-low)] rounded-xl border border-white/10 shadow-2xl"
         >
           <ThreeBackground />
-          <div className="aspect-[16/9] md:aspect-[21/9] w-full overflow-hidden relative z-0">
+          <div className="min-h-[350px] md:min-h-[500px] aspect-[4/3] md:aspect-[21/9] w-full overflow-hidden relative z-0 bg-zinc-950">
             <img
               alt={heroArticle.title}
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-50 mix-blend-overlay"
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-60"
               src={heroArticle.imageUrl || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1200'}
+              loading="eager"
             />
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent flex flex-col justify-end p-8 md:p-12 z-10">
@@ -191,7 +197,7 @@ export function HomePageClientContent({ articles: initialArticles }: { articles:
                   disabled={isRefreshing}
                 >
                   <RefreshCw size={12} className={isRefreshing ? 'animate-spin' : ''} />
-                  {isRefreshing ? 'Refreshing...' : `Updated ${formatTime(lastUpdated)}`}
+                  {isRefreshing ? 'Refreshing...' : `Updated ${mounted ? formatTime(lastUpdated) : ''}`}
                 </button>
               </motion.div>
             </motion.div>
