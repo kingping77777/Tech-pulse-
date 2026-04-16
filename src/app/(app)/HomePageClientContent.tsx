@@ -157,7 +157,6 @@ export function HomePageClientContent({ articles: initialArticles }: { articles:
           transition={{ type: 'spring' as const, stiffness: 200, damping: 20 }}
           className="relative group overflow-hidden bg-[var(--surface-container-low)] rounded-xl border border-white/10 shadow-2xl"
         >
-          <ThreeBackground />
           <div className="min-h-[480px] md:min-h-[550px] aspect-auto md:aspect-[21/9] w-full overflow-hidden relative z-0 bg-zinc-950">
             <img
               alt={heroArticle.title}
@@ -166,6 +165,7 @@ export function HomePageClientContent({ articles: initialArticles }: { articles:
               loading="eager"
             />
           </div>
+          <ThreeBackground />
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/80 md:via-zinc-950/60 to-transparent flex flex-col justify-end p-5 sm:p-8 md:p-12 z-10">
             <motion.div variants={containerVariants} initial="hidden" animate="show" className="max-w-3xl">
               <motion.div variants={itemVariants} className="flex gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
